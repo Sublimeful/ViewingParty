@@ -67,5 +67,5 @@ function seekVideo(video, time)
 }
 
 
-export {isAnybodyLeader, playVideo, seekVideo, togglePauseVideo, getTime, videoVerifier};
+export {isAnybodyLeader, playVideo, seekVideo, togglePauseVideo, getTime};
 
