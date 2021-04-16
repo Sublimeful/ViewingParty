@@ -50,15 +50,13 @@ function sync(video)
   const videoLink = video.link;
   const videoTime = video.time;
 
+  //if the src is not the same then change src
   if(player.src != videoLink) {
     currentVideo.link = videoLink;
     player.src = videoLink;
-    player.pause();
-    player.currentTime = 0;
-    player.play();
   }
 
-  //if video's pause state is not equal to player's paused state
+  //get whether server video is paused
   const paused = (video.pause != null);
 
   //change the paused button based on paused
@@ -88,8 +86,13 @@ function sync(video)
 
 function update()
 {
-  currentVideo.time = player.currentTime;
+  //set the currentVideo time(convert to milliseconds)
+  currentVideo.time = player.currentTime * 1000;
+
+  //send a sync emit
   socket.emit("sync", {video: currentVideo});
+
+  //update after 500 milliseconds
   setTimeout(update, 500);
 }
 

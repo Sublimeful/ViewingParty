@@ -57,9 +57,7 @@ server.on("connection", (client) => {
 
     //time is in milliseconds
     const clientVideo = data.video;
-
-    //convert client's video time to milliseconds
-    const clientTime = data.video.time * 1000;
+    const clientTime = data.video.time;
 
     //if video differs, then sync
     if(clientVideo.link != currentVideo.link) {
@@ -76,10 +74,8 @@ server.on("connection", (client) => {
     //when client toggles pause
     if(!client.isLeader) return;
 
+    //tools.togglePauseVideo will calibrate video.time automatically
     tools.togglePauseVideo(currentVideo);
-
-    //tools.getTime calibrates video.time
-    tools.getTime(currentVideo);
 
     //then we sync the user up!
     server.emit("sync", {video: currentVideo});

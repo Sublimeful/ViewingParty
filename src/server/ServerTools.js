@@ -30,13 +30,18 @@ function playVideo(video, videoLink)
 function togglePauseVideo(video)
 {
   if(!video.pause) {
+    //set time before pause
+    video.time = Date.now() - video.start;
+
     video.pause = Date.now();
   } else {
     video.start = video.start + (Date.now() - video.pause);
     video.pause = null;
+
+    //set time after unpause
+    video.time = Date.now() - video.start;
   }
 }
-
 
 function seekVideo(video, time)
 {
@@ -62,7 +67,7 @@ function seekVideo(video, time)
     }
   }
 
-  //set time after so changes take effect
+  //set time after seek so changes take effect
   video.time = Date.now() - video.start;
 }
 
