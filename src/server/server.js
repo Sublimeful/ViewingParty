@@ -30,7 +30,10 @@ server.on("connection", (client) => {
   client.isSignedIn = false;
   client.isLeader = false;
 
-  ss(client).on('subtitle', (stream, data) => {
+  //emit a request to switch subtitle
+  client.emit("switch-subtitle");
+
+  ss(client).on('subtitle', stream => {
     //when client uploads subtitle
 
     //write the subtitle data to public/sub.vtt
