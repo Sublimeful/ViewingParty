@@ -72,6 +72,9 @@ function sync(video)
     }
   }
 
+  //convert milliseconds to seconds and set the player's time
+  player.currentTime = videoTime / 1000;
+
   //pause the video accordingly
   if(paused != player.paused) {
     if(paused)
@@ -79,9 +82,6 @@ function sync(video)
     else
       player.play();
   }
-
-  //convert milliseconds to seconds and set the player's time
-  player.currentTime = videoTime / 1000;
 }
 
 function update()
