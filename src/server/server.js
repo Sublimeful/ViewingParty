@@ -55,7 +55,9 @@ server.on("connection", (client) => {
   client.on("sync", data => {
     //time is in milliseconds
     const clientVideo = data.video;
-    const clientTime = data.video.time * 1000; //convert to milliseconds
+
+    //convert client's video time to milliseconds
+    const clientTime = data.video.time * 1000;
 
     //if video differs, then sync
     if(clientVideo.link != currentVideo.link) {

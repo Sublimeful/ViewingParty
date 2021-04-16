@@ -9,10 +9,10 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
 endif
 set shortmess=aoO
 badd +1 src/server/VideoManager.js
-badd +1 src/client/client.js
+badd +114 src/client/client.js
 badd +1 src/client/VideoManager.js
 badd +1 src/server/Timer.js
-badd +35 src/server/server.js
+badd +38 src/server/server.js
 badd +9 public/index.css
 badd +20 public/index.html
 badd +1 public/client.js
@@ -44,11 +44,11 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 43 - ((36 * winheight(0) + 19) / 38)
+let s:l = 54 - ((0 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 43
+keepjumps 54
 normal! 0
 lcd ~/Desktop/viewing-palace
 tabnext
@@ -70,11 +70,37 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 31 - ((30 * winheight(0) + 19) / 38)
+let s:l = 30 - ((29 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 31
+keepjumps 30
+normal! 0
+lcd ~/Desktop/viewing-palace
+tabnext
+edit ~/Desktop/viewing-palace/src/client/client.js
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+argglobal
+setlocal fdm=marker
+setlocal fde=0
+setlocal fmr=<--,-->
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+let s:l = 195 - ((12 * winheight(0) + 19) / 38)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 195
 normal! 0
 lcd ~/Desktop/viewing-palace
 tabnext
@@ -96,57 +122,13 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 9 - ((2 * winheight(0) + 19) / 38)
+let s:l = 16 - ((12 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 9
+keepjumps 16
 normal! 0
 lcd ~/Desktop/viewing-palace
-tabnext
-edit ~/Desktop/viewing-palace/src/client/client.js
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-exe '2resize ' . ((&lines * 2 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 1 + 86) / 172)
-argglobal
-setlocal fdm=marker
-setlocal fde=0
-setlocal fmr=<--,-->
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 1 - ((0 * winheight(0) + 19) / 38)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
-lcd ~/Desktop/viewing-palace
-wincmd w
-argglobal
-enew
-balt ~/Desktop/viewing-palace/src/client/client.js
-setlocal fdm=marker
-setlocal fde=0
-setlocal fmr=<--,-->
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-lcd ~/Desktop/viewing-palace
-wincmd w
-exe '2resize ' . ((&lines * 2 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 1 + 86) / 172)
 tabnext
 edit ~/Desktop/viewing-palace/public/index.html
 set splitbelow splitright
@@ -166,11 +148,11 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 20 - ((5 * winheight(0) + 19) / 38)
+let s:l = 11 - ((10 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 20
+keepjumps 11
 normal! 0
 lcd ~/Desktop/viewing-palace
 tabnext 2
@@ -184,6 +166,7 @@ if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

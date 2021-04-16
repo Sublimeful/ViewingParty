@@ -14539,7 +14539,8 @@ function sync(video)
       player.play();
   }
 
-  player.currentTime = videoTime / 1000; //convert milliseconds to seconds
+  //convert milliseconds to seconds
+  player.currentTime = videoTime / 1000;
 }
 
 function update()
@@ -14588,6 +14589,7 @@ function addLeaderControls()
     socket.emit("seek", {time: 5000});
   })
 
+  //toggle pause button activation when pressed
   pause.addEventListener("click", () => {
     socket.emit("toggle-pause");
     if(pause.classList.contains("activated")) {
@@ -14598,6 +14600,15 @@ function addLeaderControls()
       pause.textContent = "⏸";
     }
   })
+
+  //if a file is uploaded to subtitle, then activate subtitle label
+  subtitle.onchange = () => {
+    if(subtitle.files[0]) {
+      subtitleLabel.classList.add("activated");
+    } else {
+      subtitleLabel.classList.remove("activated");
+    }
+  }
 
   videoInput.addEventListener("keydown", event => {
     if (event.code == "Enter") {
