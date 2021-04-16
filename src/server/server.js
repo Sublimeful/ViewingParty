@@ -52,11 +52,16 @@ server.on("connection", (client) => {
       client.emit("sync", {video: currentVideo});
     }
 
+    console.log(tools.getTime(currentVideo));
     //set video.time to getTime and return getTime
-    if(Math.abs((currentVideo.time = tools.getTime(currentVideo)) - clientTime) >= 2000) {
-      console.log(Math.abs((tools.getTime(currentVideo)) - clientTime))
+    if(Math.abs(tools.getTime(currentVideo) - clientTime) >= 2000) {
       client.emit("sync", {video: currentVideo});
     }
+  })
+
+  client.on("toggle-pause", () => {
+    if(!client.isLeader) return;
+    tools.togglePauseVideo(currentVideo);
   })
 
   //client syncs
