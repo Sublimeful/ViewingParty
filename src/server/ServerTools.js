@@ -17,6 +17,7 @@ function getTime(video)
 {
   //if the video is paused then return the time when it was unpaused
   if(video.pause) return video.time;
+
   //set time
   video.time = Date.now() - video.start;
   return Date.now() - video.start;
@@ -56,6 +57,7 @@ function seekVideo(video, time)
       video.start = Date.now();
     }
   }
+
   //set time
   video.time = Date.now() - video.start;
 }
