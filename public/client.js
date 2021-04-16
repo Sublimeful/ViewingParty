@@ -7030,7 +7030,6 @@ function sync(video)
   //if video's pause state is not equal to player's paused state
   const paused = (video.pause != null);
 
-
   //change the paused button based on paused
   const pauseBtn = document.getElementById("pause")
   if(pauseBtn)
