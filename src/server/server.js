@@ -30,8 +30,9 @@ server.on("connection", (client) => {
   client.isSignedIn = false;
   client.isLeader = false;
 
-  //when client uploads subtitle
   ss(client).on('subtitle', (stream, data) => {
+    //when client uploads subtitle
+
     //write the subtitle data to public/sub.vtt
     const filename = "public/sub.vtt";
     stream.pipe(fs.createWriteStream(filename));
@@ -40,8 +41,8 @@ server.on("connection", (client) => {
     server.emit("switch-subtitle");
   })
 
-  //client toggles leader button
   client.on("toggle-leader", () => {
+    //when client toggles the leader button
     if(client.isLeader) {
       client.isLeader = false;
       client.emit("unleader");
@@ -51,8 +52,9 @@ server.on("connection", (client) => {
     }
   })
 
-  //syncs a client
   client.on("sync", data => {
+    //when client syncs up
+
     //time is in milliseconds
     const clientVideo = data.video;
 
@@ -71,7 +73,9 @@ server.on("connection", (client) => {
   })
 
   client.on("toggle-pause", () => {
+    //when client toggles pause
     if(!client.isLeader) return;
+
     tools.togglePauseVideo(currentVideo);
 
     //tools.getTime calibrates video.time
@@ -81,25 +85,26 @@ server.on("connection", (client) => {
     server.emit("sync", {video: currentVideo});
   })
 
-  //client syncs
   client.on("seek", data => {
+    //when client seeks
     if(!client.isLeader) return;
+
+    //tools.seekVideo will calibrate video.time automatically
     tools.seekVideo(currentVideo, data.time);
+
+    //then we sync the user up!
+    server.emit("sync", {video: currentVideo});
   })
 
-  //client plays a link
   client.on("play-video", data => {
-    const videoLink = data.link;
-    if(tools.videoVerifier(videoLink)) {
-      tools.playVideo(currentVideo, videoLink);
-    }
+    //when client plays a link
+    tools.playVideo(currentVideo, data.link);
   })
 
-  //client exits
   client.on("disconnect", () => {
+    //when client exits
     clientList.splice(clientList.indexOf(client), 1);
   })
-
 });
 
 app.get("/", function (req, res) {
