@@ -14539,7 +14539,7 @@ function sync(video)
       player.play();
   }
 
-  //convert milliseconds to seconds
+  //convert milliseconds to seconds and set the player's time
   player.currentTime = videoTime / 1000;
 }
 
@@ -14616,7 +14616,7 @@ function addLeaderControls()
       if (videoInput.value.trim() != "") {
         //play the video
         socket.emit("play-video", { link: videoInput.value });
-        
+
         //if there is subtitle, then use it
         if(subtitle.files[0])
         {
