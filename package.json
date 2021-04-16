@@ -1,35 +1,37 @@
 {
-  "name": "viewing-palace",
+  "name": "viewing-party",
   "version": "1.0.0",
-  "description": "THE viewing palace",
-  "main": "index.js",
+  "description": "A viewing party you can setup with your friends!",
+  "main": "src/server/server.js",
   "type": "module",
+  "dependencies": {
+    "concurrently": "^6.0.2",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "socket.io": "^4.0.1",
+    "socket.io-client": "^4.0.1",
+    "socket.io-stream": "^0.9.1",
+    "watchify": "^4.0.0"
+  },
+  "devDependencies": {},
   "scripts": {
     "start": "npm run concurrently",
     "concurrently": "concurrently --kill-others \"npm run nodemon\" \"npm run watchify\"",
     "nodemon": "nodemon src/server/server.js",
     "watchify": "watchify src/client/client.js -o public/client.js -v"
   },
-  "repository": "Viewing Palace",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sublimeful/ViewingParty.git"
+  },
   "keywords": [
     "viewing",
-    "palace"
+    "party"
   ],
   "author": "Sublimeful",
-  "license": "ISC",
-  "dependencies": {
-    "@types/express": "^4.17.11",
-    "concurrently": "^5.3.0",
-    "crypto-js": "^4.0.0",
-    "css-element-queries": "^1.2.3",
-    "express": "^4.17.1",
-    "http": "0.0.1-security",
-    "node-fetch": "^2.6.1",
-    "nodemon": "^2.0.7",
-    "socket.io": "^3.1.1",
-    "socket.io-client": "^3.1.1",
-    "socket.io-stream": "^0.9.1",
-    "watchify": "^4.0.0",
-    "youtube-player": "^5.5.2"
-  }
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/Sublimeful/ViewingParty/issues"
+  },
+  "homepage": "https://github.com/Sublimeful/ViewingParty#readme"
 }

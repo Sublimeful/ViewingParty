@@ -2533,6 +2533,12 @@ class Socket extends Emitter {
         },
         false
       );
+      if (this.hostname !== "localhost") {
+        this.offlineEventListener = () => {
+          this.onClose("transport close");
+        };
+        addEventListener("offline", this.offlineEventListener, false);
+      }
     }
 
     this.open();
@@ -2867,6 +2873,9 @@ class Socket extends Emitter {
     this.pingTimeoutTimer = setTimeout(() => {
       this.onClose("ping timeout");
     }, this.pingInterval + this.pingTimeout);
+    if (this.opts.autoUnref) {
+      this.pingTimeoutTimer.unref();
+    }
   }
 
   /**
@@ -3053,6 +3062,10 @@ class Socket extends Emitter {
       // ignore further transport communication
       this.transport.removeAllListeners();
 
+      if (typeof removeEventListener === "function") {
+        removeEventListener("offline", this.offlineEventListener, false);
+      }
+
       // set ready state
       this.readyState = "closed";
 
@@ -3232,7 +3245,7 @@ class Transport extends Emitter {
 module.exports = Transport;
 
 },{"component-emitter":11,"debug":24,"engine.io-parser":30}],16:[function(require,module,exports){
-const XMLHttpRequest = require("xmlhttprequest-ssl");
+const XMLHttpRequest = require("../../contrib/xmlhttprequest-ssl/XMLHttpRequest");
 const XHR = require("./polling-xhr");
 const JSONP = require("./polling-jsonp");
 const websocket = require("./websocket");
@@ -3278,7 +3291,7 @@ function polling(opts) {
   }
 }
 
-},{"./polling-jsonp":17,"./polling-xhr":18,"./websocket":21,"xmlhttprequest-ssl":23}],17:[function(require,module,exports){
+},{"../../contrib/xmlhttprequest-ssl/XMLHttpRequest":23,"./polling-jsonp":17,"./polling-xhr":18,"./websocket":21}],17:[function(require,module,exports){
 const Polling = require("./polling");
 const globalThis = require("../globalThis");
 
@@ -3483,7 +3496,7 @@ module.exports = JSONPPolling;
 },{"../globalThis":12,"./polling":19}],18:[function(require,module,exports){
 /* global attachEvent */
 
-const XMLHttpRequest = require("xmlhttprequest-ssl");
+const XMLHttpRequest = require("../../contrib/xmlhttprequest-ssl/XMLHttpRequest");
 const Polling = require("./polling");
 const Emitter = require("component-emitter");
 const { pick } = require("../util");
@@ -3618,7 +3631,8 @@ class Request extends Emitter {
       "cert",
       "ca",
       "ciphers",
-      "rejectUnauthorized"
+      "rejectUnauthorized",
+      "autoUnref"
     );
     opts.xdomain = !!this.opts.xd;
     opts.xscheme = !!this.opts.xs;
@@ -3818,7 +3832,7 @@ function unloadHandler() {
 module.exports = XHR;
 module.exports.Request = Request;
 
-},{"../globalThis":12,"../util":22,"./polling":19,"component-emitter":11,"debug":24,"xmlhttprequest-ssl":23}],19:[function(require,module,exports){
+},{"../../contrib/xmlhttprequest-ssl/XMLHttpRequest":23,"../globalThis":12,"../util":22,"./polling":19,"component-emitter":11,"debug":24}],19:[function(require,module,exports){
 const Transport = require("../transport");
 const parseqs = require("parseqs");
 const parser = require("engine.io-parser");
@@ -4030,7 +4044,7 @@ class Polling extends Transport {
 
 module.exports = Polling;
 
-},{"../transport":15,"debug":24,"engine.io-parser":30,"parseqs":46,"yeast":96}],20:[function(require,module,exports){
+},{"../transport":15,"debug":24,"engine.io-parser":30,"parseqs":46,"yeast":97}],20:[function(require,module,exports){
 const globalThis = require("../globalThis");
 
 module.exports = {
@@ -4144,20 +4158,15 @@ class WS extends Transport {
    * @api private
    */
   addEventListeners() {
-    const self = this;
-
-    this.ws.onopen = function() {
-      self.onOpen();
+    this.ws.onopen = () => {
+      if (this.opts.autoUnref) {
+        this.ws._socket.unref();
+      }
+      this.onOpen();
     };
-    this.ws.onclose = function() {
-      self.onClose();
-    };
-    this.ws.onmessage = function(ev) {
-      self.onData(ev.data);
-    };
-    this.ws.onerror = function(e) {
-      self.onError("websocket error", e);
-    };
+    this.ws.onclose = this.onClose.bind(this);
+    this.ws.onmessage = ev => this.onData(ev.data);
+    this.ws.onerror = e => this.onError("websocket error", e);
   }
 
   /**
@@ -4312,7 +4321,7 @@ class WS extends Transport {
 module.exports = WS;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"../transport":15,"../util":22,"./websocket-constructor":20,"buffer":7,"debug":24,"engine.io-parser":30,"parseqs":46,"yeast":96}],22:[function(require,module,exports){
+},{"../transport":15,"../util":22,"./websocket-constructor":20,"buffer":7,"debug":24,"engine.io-parser":30,"parseqs":46,"yeast":97}],22:[function(require,module,exports){
 module.exports.pick = (obj, ...attr) => {
   return attr.reduce((acc, k) => {
     if (obj.hasOwnProperty(k)) {
@@ -6868,19 +6877,20 @@ exports.connect = lookup;
  */
 var manager_2 = require("./manager");
 Object.defineProperty(exports, "Manager", { enumerable: true, get: function () { return manager_2.Manager; } });
+exports.default = lookup;
 
-},{"./manager":50,"./socket":52,"./url":53,"debug":54,"socket.io-parser":58}],50:[function(require,module,exports){
+},{"./manager":50,"./socket":52,"./url":54,"debug":55,"socket.io-parser":59}],50:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Manager = void 0;
 const eio = require("engine.io-client");
 const socket_1 = require("./socket");
-const Emitter = require("component-emitter");
 const parser = require("socket.io-parser");
 const on_1 = require("./on");
 const Backoff = require("backo2");
+const typed_events_1 = require("./typed-events");
 const debug = require("debug")("socket.io-client:manager");
-class Manager extends Emitter {
+class Manager extends typed_events_1.StrictEventEmitter {
     constructor(uri, opts) {
         super();
         this.nsps = {};
@@ -6996,7 +7006,7 @@ class Manager extends Emitter {
             debug("error");
             self.cleanup();
             self._readyState = "closed";
-            super.emit("error", err);
+            this.emitReserved("error", err);
             if (fn) {
                 fn(err);
             }
@@ -7018,6 +7028,9 @@ class Manager extends Emitter {
                 socket.close();
                 socket.emit("error", new Error("timeout"));
             }, timeout);
+            if (this.opts.autoUnref) {
+                timer.unref();
+            }
             this.subs.push(function subDestroy() {
                 clearTimeout(timer);
             });
@@ -7046,7 +7059,7 @@ class Manager extends Emitter {
         this.cleanup();
         // mark as open
         this._readyState = "open";
-        super.emit("open");
+        this.emitReserved("open");
         // add new subs
         const socket = this.engine;
         this.subs.push(on_1.on(socket, "ping", this.onping.bind(this)), on_1.on(socket, "data", this.ondata.bind(this)), on_1.on(socket, "error", this.onerror.bind(this)), on_1.on(socket, "close", this.onclose.bind(this)), on_1.on(this.decoder, "decoded", this.ondecoded.bind(this)));
@@ -7057,7 +7070,7 @@ class Manager extends Emitter {
      * @private
      */
     onping() {
-        super.emit("ping");
+        this.emitReserved("ping");
     }
     /**
      * Called with data.
@@ -7073,7 +7086,7 @@ class Manager extends Emitter {
      * @private
      */
     ondecoded(packet) {
-        super.emit("packet", packet);
+        this.emitReserved("packet", packet);
     }
     /**
      * Called upon socket error.
@@ -7082,7 +7095,7 @@ class Manager extends Emitter {
      */
     onerror(err) {
         debug("error", err);
-        super.emit("error", err);
+        this.emitReserved("error", err);
     }
     /**
      * Creates a new socket for the given `nsp`.
@@ -7176,7 +7189,7 @@ class Manager extends Emitter {
         this.cleanup();
         this.backoff.reset();
         this._readyState = "closed";
-        super.emit("close", reason);
+        this.emitReserved("close", reason);
         if (this._reconnection && !this.skipReconnect) {
             this.reconnect();
         }
@@ -7193,7 +7206,7 @@ class Manager extends Emitter {
         if (this.backoff.attempts >= this._reconnectionAttempts) {
             debug("reconnect failed");
             this.backoff.reset();
-            super.emit("reconnect_failed");
+            this.emitReserved("reconnect_failed");
             this._reconnecting = false;
         }
         else {
@@ -7204,7 +7217,7 @@ class Manager extends Emitter {
                 if (self.skipReconnect)
                     return;
                 debug("attempting reconnect");
-                super.emit("reconnect_attempt", self.backoff.attempts);
+                this.emitReserved("reconnect_attempt", self.backoff.attempts);
                 // check again for the case socket closed in above events
                 if (self.skipReconnect)
                     return;
@@ -7213,7 +7226,7 @@ class Manager extends Emitter {
                         debug("reconnect attempt error");
                         self._reconnecting = false;
                         self.reconnect();
-                        super.emit("reconnect_error", err);
+                        this.emitReserved("reconnect_error", err);
                     }
                     else {
                         debug("reconnect success");
@@ -7221,6 +7234,9 @@ class Manager extends Emitter {
                     }
                 });
             }, delay);
+            if (this.opts.autoUnref) {
+                timer.unref();
+            }
             this.subs.push(function subDestroy() {
                 clearTimeout(timer);
             });
@@ -7235,12 +7251,12 @@ class Manager extends Emitter {
         const attempt = this.backoff.attempts;
         this._reconnecting = false;
         this.backoff.reset();
-        super.emit("reconnect", attempt);
+        this.emitReserved("reconnect", attempt);
     }
 }
 exports.Manager = Manager;
 
-},{"./on":51,"./socket":52,"backo2":3,"component-emitter":11,"debug":54,"engine.io-client":13,"socket.io-parser":58}],51:[function(require,module,exports){
+},{"./on":51,"./socket":52,"./typed-events":53,"backo2":3,"debug":55,"engine.io-client":13,"socket.io-parser":59}],51:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.on = void 0;
@@ -7257,8 +7273,8 @@ exports.on = on;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Socket = void 0;
 const socket_io_parser_1 = require("socket.io-parser");
-const Emitter = require("component-emitter");
 const on_1 = require("./on");
+const typed_events_1 = require("./typed-events");
 const debug = require("debug")("socket.io-client:socket");
 /**
  * Internal events.
@@ -7273,7 +7289,7 @@ const RESERVED_EVENTS = Object.freeze({
     newListener: 1,
     removeListener: 1,
 });
-class Socket extends Emitter {
+class Socket extends typed_events_1.StrictEventEmitter {
     /**
      * `Socket` constructor.
      *
@@ -7359,7 +7375,6 @@ class Socket extends Emitter {
      * Override `emit`.
      * If the event is in `events`, it's emitted normally.
      *
-     * @param ev - event name
      * @return self
      * @public
      */
@@ -7430,7 +7445,7 @@ class Socket extends Emitter {
      */
     onerror(err) {
         if (!this.connected) {
-            super.emit("connect_error", err);
+            this.emitReserved("connect_error", err);
         }
     }
     /**
@@ -7444,7 +7459,7 @@ class Socket extends Emitter {
         this.connected = false;
         this.disconnected = true;
         delete this.id;
-        super.emit("disconnect", reason);
+        this.emitReserved("disconnect", reason);
     }
     /**
      * Called with socket packet.
@@ -7463,7 +7478,7 @@ class Socket extends Emitter {
                     this.onconnect(id);
                 }
                 else {
-                    super.emit("connect_error", new Error("It seems you are trying to reach a Socket.IO server in v2.x with a v3.x client, but they are not compatible (more information here: https://socket.io/docs/v3/migrating-from-2-x-to-3-0/)"));
+                    this.emitReserved("connect_error", new Error("It seems you are trying to reach a Socket.IO server in v2.x with a v3.x client, but they are not compatible (more information here: https://socket.io/docs/v3/migrating-from-2-x-to-3-0/)"));
                 }
                 break;
             case socket_io_parser_1.PacketType.EVENT:
@@ -7485,7 +7500,7 @@ class Socket extends Emitter {
                 const err = new Error(packet.data.message);
                 // @ts-ignore
                 err.data = packet.data.data;
-                super.emit("connect_error", err);
+                this.emitReserved("connect_error", err);
                 break;
         }
     }
@@ -7566,7 +7581,7 @@ class Socket extends Emitter {
         this.id = id;
         this.connected = true;
         this.disconnected = false;
-        super.emit("connect");
+        this.emitReserved("connect");
         this.emitBuffered();
     }
     /**
@@ -7715,7 +7730,81 @@ class Socket extends Emitter {
 }
 exports.Socket = Socket;
 
-},{"./on":51,"component-emitter":11,"debug":54,"socket.io-parser":58}],53:[function(require,module,exports){
+},{"./on":51,"./typed-events":53,"debug":55,"socket.io-parser":59}],53:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.StrictEventEmitter = void 0;
+const Emitter = require("component-emitter");
+/**
+ * Strictly typed version of an `EventEmitter`. A `TypedEventEmitter` takes type
+ * parameters for mappings of event names to event data types, and strictly
+ * types method calls to the `EventEmitter` according to these event maps.
+ *
+ * @typeParam ListenEvents - `EventsMap` of user-defined events that can be
+ * listened to with `on` or `once`
+ * @typeParam EmitEvents - `EventsMap` of user-defined events that can be
+ * emitted with `emit`
+ * @typeParam ReservedEvents - `EventsMap` of reserved events, that can be
+ * emitted by socket.io with `emitReserved`, and can be listened to with
+ * `listen`.
+ */
+class StrictEventEmitter extends Emitter {
+    /**
+     * Adds the `listener` function as an event listener for `ev`.
+     *
+     * @param ev Name of the event
+     * @param listener Callback function
+     */
+    on(ev, listener) {
+        super.on(ev, listener);
+        return this;
+    }
+    /**
+     * Adds a one-time `listener` function as an event listener for `ev`.
+     *
+     * @param ev Name of the event
+     * @param listener Callback function
+     */
+    once(ev, listener) {
+        super.once(ev, listener);
+        return this;
+    }
+    /**
+     * Emits an event.
+     *
+     * @param ev Name of the event
+     * @param args Values to send to listeners of this event
+     */
+    emit(ev, ...args) {
+        super.emit(ev, ...args);
+        return this;
+    }
+    /**
+     * Emits a reserved event.
+     *
+     * This method is `protected`, so that only a class extending
+     * `StrictEventEmitter` can emit its own reserved events.
+     *
+     * @param ev Reserved event name
+     * @param args Arguments to emit along with the event
+     */
+    emitReserved(ev, ...args) {
+        super.emit(ev, ...args);
+        return this;
+    }
+    /**
+     * Returns the listeners listening to an event.
+     *
+     * @param event Event name
+     * @returns Array of listeners subscribed to `event`
+     */
+    listeners(event) {
+        return super.listeners(event);
+    }
+}
+exports.StrictEventEmitter = StrictEventEmitter;
+
+},{"component-emitter":11}],54:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.url = void 0;
@@ -7783,13 +7872,13 @@ function url(uri, path = "", loc) {
 }
 exports.url = url;
 
-},{"debug":54,"parseuri":47}],54:[function(require,module,exports){
+},{"debug":55,"parseuri":47}],55:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"./common":55,"_process":48,"dup":24}],55:[function(require,module,exports){
+},{"./common":56,"_process":48,"dup":24}],56:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"dup":25,"ms":56}],56:[function(require,module,exports){
+},{"dup":25,"ms":57}],57:[function(require,module,exports){
 arguments[4][26][0].apply(exports,arguments)
-},{"dup":26}],57:[function(require,module,exports){
+},{"dup":26}],58:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reconstructPacket = exports.deconstructPacket = void 0;
@@ -7871,7 +7960,7 @@ function _reconstructPacket(data, buffers) {
     return data;
 }
 
-},{"./is-binary":59}],58:[function(require,module,exports){
+},{"./is-binary":60}],59:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Decoder = exports.Encoder = exports.PacketType = exports.protocol = void 0;
@@ -8153,7 +8242,7 @@ class BinaryReconstructor {
     }
 }
 
-},{"./binary":57,"./is-binary":59,"component-emitter":11,"debug":60}],59:[function(require,module,exports){
+},{"./binary":58,"./is-binary":60,"component-emitter":11,"debug":61}],60:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hasBinary = exports.isBinary = void 0;
@@ -8210,18 +8299,18 @@ function hasBinary(obj, toJSON) {
 }
 exports.hasBinary = hasBinary;
 
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"./common":61,"_process":48,"dup":24}],61:[function(require,module,exports){
+},{"./common":62,"_process":48,"dup":24}],62:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"dup":25,"ms":62}],62:[function(require,module,exports){
+},{"dup":25,"ms":63}],63:[function(require,module,exports){
 arguments[4][26][0].apply(exports,arguments)
-},{"dup":26}],63:[function(require,module,exports){
+},{"dup":26}],64:[function(require,module,exports){
 
 module.exports = require('./lib');
 
 
-},{"./lib":65}],64:[function(require,module,exports){
+},{"./lib":66}],65:[function(require,module,exports){
 (function (Buffer){(function (){
 var util = require('util');
 var Readable = require('stream').Readable;
@@ -8292,7 +8381,7 @@ BlobReadStream.prototype._onerror = function(e) {
 
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"buffer":7,"component-bind":10,"stream":73,"util":94}],65:[function(require,module,exports){
+},{"buffer":7,"component-bind":10,"stream":74,"util":95}],66:[function(require,module,exports){
 (function (Buffer){(function (){
 var Socket = require('./socket');
 var IOStream = require('./iostream');
@@ -8373,7 +8462,7 @@ exports.createBlobReadStream = function(blob, options) {
 };
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./blob-read-stream":64,"./iostream":66,"./socket":68,"buffer":7}],66:[function(require,module,exports){
+},{"./blob-read-stream":65,"./iostream":67,"./socket":69,"buffer":7}],67:[function(require,module,exports){
 var util = require('util');
 var Duplex = require('stream').Duplex;
 var bind = require('component-bind');
@@ -8640,7 +8729,7 @@ IOStream.prototype._onerror = function(err) {
   this.destroy();
 };
 
-},{"./uuid":69,"component-bind":10,"debug":70,"stream":73,"util":94}],67:[function(require,module,exports){
+},{"./uuid":70,"component-bind":10,"debug":71,"stream":74,"util":95}],68:[function(require,module,exports){
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 var IOStream = require('./iostream');
@@ -8747,7 +8836,7 @@ Decoder.prototype.decodeObject = function(obj) {
   return v;
 }
 
-},{"./iostream":66,"events":32,"util":94}],68:[function(require,module,exports){
+},{"./iostream":67,"events":32,"util":95}],69:[function(require,module,exports){
 (function (global,Buffer){(function (){
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
@@ -9038,7 +9127,7 @@ Socket.prototype.cleanup = function(id) {
 
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./iostream":66,"./parser":67,"buffer":7,"component-bind":10,"debug":70,"events":32,"util":94}],69:[function(require,module,exports){
+},{"./iostream":67,"./parser":68,"buffer":7,"component-bind":10,"debug":71,"events":32,"util":95}],70:[function(require,module,exports){
 // UUID function from https://gist.github.com/jed/982883
 // More lightweight than node-uuid
 function b(
@@ -9065,7 +9154,7 @@ function b(
 
 module.exports = b;
 
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -9235,7 +9324,7 @@ function localstorage(){
   } catch (e) {}
 }
 
-},{"./debug":71}],71:[function(require,module,exports){
+},{"./debug":72}],72:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -9434,7 +9523,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":72}],72:[function(require,module,exports){
+},{"ms":73}],73:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -9561,7 +9650,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -9692,7 +9781,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":32,"inherits":74,"readable-stream/lib/_stream_duplex.js":76,"readable-stream/lib/_stream_passthrough.js":77,"readable-stream/lib/_stream_readable.js":78,"readable-stream/lib/_stream_transform.js":79,"readable-stream/lib/_stream_writable.js":80,"readable-stream/lib/internal/streams/end-of-stream.js":84,"readable-stream/lib/internal/streams/pipeline.js":86}],74:[function(require,module,exports){
+},{"events":32,"inherits":75,"readable-stream/lib/_stream_duplex.js":77,"readable-stream/lib/_stream_passthrough.js":78,"readable-stream/lib/_stream_readable.js":79,"readable-stream/lib/_stream_transform.js":80,"readable-stream/lib/_stream_writable.js":81,"readable-stream/lib/internal/streams/end-of-stream.js":85,"readable-stream/lib/internal/streams/pipeline.js":87}],75:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -9721,7 +9810,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 'use strict';
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
@@ -9850,7 +9939,7 @@ createErrorType('ERR_UNKNOWN_ENCODING', function (arg) {
 createErrorType('ERR_STREAM_UNSHIFT_AFTER_END_EVENT', 'stream.unshift() after end event');
 module.exports.codes = codes;
 
-},{}],76:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 (function (process){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -9992,7 +10081,7 @@ Object.defineProperty(Duplex.prototype, 'destroyed', {
   }
 });
 }).call(this)}).call(this,require('_process'))
-},{"./_stream_readable":78,"./_stream_writable":80,"_process":48,"inherits":74}],77:[function(require,module,exports){
+},{"./_stream_readable":79,"./_stream_writable":81,"_process":48,"inherits":75}],78:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -10032,7 +10121,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":79,"inherits":74}],78:[function(require,module,exports){
+},{"./_stream_transform":80,"inherits":75}],79:[function(require,module,exports){
 (function (process,global){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -11159,7 +11248,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../errors":75,"./_stream_duplex":76,"./internal/streams/async_iterator":81,"./internal/streams/buffer_list":82,"./internal/streams/destroy":83,"./internal/streams/from":85,"./internal/streams/state":87,"./internal/streams/stream":88,"_process":48,"buffer":7,"events":32,"inherits":74,"string_decoder/":89,"util":6}],79:[function(require,module,exports){
+},{"../errors":76,"./_stream_duplex":77,"./internal/streams/async_iterator":82,"./internal/streams/buffer_list":83,"./internal/streams/destroy":84,"./internal/streams/from":86,"./internal/streams/state":88,"./internal/streams/stream":89,"_process":48,"buffer":7,"events":32,"inherits":75,"string_decoder/":90,"util":6}],80:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -11361,7 +11450,7 @@ function done(stream, er, data) {
   if (stream._transformState.transforming) throw new ERR_TRANSFORM_ALREADY_TRANSFORMING();
   return stream.push(null);
 }
-},{"../errors":75,"./_stream_duplex":76,"inherits":74}],80:[function(require,module,exports){
+},{"../errors":76,"./_stream_duplex":77,"inherits":75}],81:[function(require,module,exports){
 (function (process,global){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -12061,7 +12150,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../errors":75,"./_stream_duplex":76,"./internal/streams/destroy":83,"./internal/streams/state":87,"./internal/streams/stream":88,"_process":48,"buffer":7,"inherits":74,"util-deprecate":91}],81:[function(require,module,exports){
+},{"../errors":76,"./_stream_duplex":77,"./internal/streams/destroy":84,"./internal/streams/state":88,"./internal/streams/stream":89,"_process":48,"buffer":7,"inherits":75,"util-deprecate":92}],82:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -12271,7 +12360,7 @@ var createReadableStreamAsyncIterator = function createReadableStreamAsyncIterat
 
 module.exports = createReadableStreamAsyncIterator;
 }).call(this)}).call(this,require('_process'))
-},{"./end-of-stream":84,"_process":48}],82:[function(require,module,exports){
+},{"./end-of-stream":85,"_process":48}],83:[function(require,module,exports){
 'use strict';
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -12482,7 +12571,7 @@ function () {
 
   return BufferList;
 }();
-},{"buffer":7,"util":6}],83:[function(require,module,exports){
+},{"buffer":7,"util":6}],84:[function(require,module,exports){
 (function (process){(function (){
 'use strict'; // undocumented cb() API, needed for core, not for public API
 
@@ -12590,7 +12679,7 @@ module.exports = {
   errorOrDestroy: errorOrDestroy
 };
 }).call(this)}).call(this,require('_process'))
-},{"_process":48}],84:[function(require,module,exports){
+},{"_process":48}],85:[function(require,module,exports){
 // Ported from https://github.com/mafintosh/end-of-stream with
 // permission from the author, Mathias Buus (@mafintosh).
 'use strict';
@@ -12695,12 +12784,12 @@ function eos(stream, opts, callback) {
 }
 
 module.exports = eos;
-},{"../../../errors":75}],85:[function(require,module,exports){
+},{"../../../errors":76}],86:[function(require,module,exports){
 module.exports = function () {
   throw new Error('Readable.from is not available in the browser')
 };
 
-},{}],86:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 // Ported from https://github.com/mafintosh/pump with
 // permission from the author, Mathias Buus (@mafintosh).
 'use strict';
@@ -12798,7 +12887,7 @@ function pipeline() {
 }
 
 module.exports = pipeline;
-},{"../../../errors":75,"./end-of-stream":84}],87:[function(require,module,exports){
+},{"../../../errors":76,"./end-of-stream":85}],88:[function(require,module,exports){
 'use strict';
 
 var ERR_INVALID_OPT_VALUE = require('../../../errors').codes.ERR_INVALID_OPT_VALUE;
@@ -12826,10 +12915,10 @@ function getHighWaterMark(state, options, duplexKey, isDuplex) {
 module.exports = {
   getHighWaterMark: getHighWaterMark
 };
-},{"../../../errors":75}],88:[function(require,module,exports){
+},{"../../../errors":76}],89:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":32}],89:[function(require,module,exports){
+},{"events":32}],90:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -13126,7 +13215,7 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":90}],90:[function(require,module,exports){
+},{"safe-buffer":91}],91:[function(require,module,exports){
 /*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
@@ -13193,7 +13282,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":7}],91:[function(require,module,exports){
+},{"buffer":7}],92:[function(require,module,exports){
 (function (global){(function (){
 
 /**
@@ -13264,14 +13353,14 @@ function config (name) {
 }
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],92:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],93:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 // Currently in sync with Node.js lib/internal/util/types.js
 // https://github.com/nodejs/node/commit/112cc7c27551254aa2b17098fb774867f05ed0d9
 
@@ -13605,7 +13694,7 @@ exports.isAnyArrayBuffer = isAnyArrayBuffer;
   });
 });
 
-},{"is-arguments":43,"is-generator-function":44,"is-typed-array":45,"which-typed-array":95}],94:[function(require,module,exports){
+},{"is-arguments":43,"is-generator-function":44,"is-typed-array":45,"which-typed-array":96}],95:[function(require,module,exports){
 (function (process){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -14324,7 +14413,7 @@ function callbackify(original) {
 exports.callbackify = callbackify;
 
 }).call(this)}).call(this,require('_process'))
-},{"./support/isBuffer":92,"./support/types":93,"_process":48,"inherits":42}],95:[function(require,module,exports){
+},{"./support/isBuffer":93,"./support/types":94,"_process":48,"inherits":42}],96:[function(require,module,exports){
 (function (global){(function (){
 'use strict';
 
@@ -14384,7 +14473,7 @@ module.exports = function whichTypedArray(value) {
 };
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"available-typed-arrays":2,"call-bind/callBound":8,"es-abstract/helpers/getOwnPropertyDescriptor":31,"foreach":33,"has-symbols":38,"is-typed-array":45}],96:[function(require,module,exports){
+},{"available-typed-arrays":2,"call-bind/callBound":8,"es-abstract/helpers/getOwnPropertyDescriptor":31,"foreach":33,"has-symbols":38,"is-typed-array":45}],97:[function(require,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -14454,7 +14543,7 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}],97:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 const io = require("socket.io-client");
 const ss = require('socket.io-stream');
 const socket = io();
@@ -14665,4 +14754,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-},{"socket.io-client":49,"socket.io-stream":63}]},{},[97]);
+},{"socket.io-client":49,"socket.io-stream":64}]},{},[98]);
