@@ -59,6 +59,12 @@ server.on("connection", (client) => {
     }
   })
 
+  //client syncs
+  client.on("seek", data => {
+    if(!client.isLeader) return;
+    tools.seekVideo(currentVideo, data.time);
+  })
+
   //client plays a link
   client.on("play-video", data => {
     const videoLink = data.link;

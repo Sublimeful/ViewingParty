@@ -65,6 +65,14 @@ function addLeaderControls()
   seekBack.textContent = "<";
   seekForward.textContent = ">";
 
+  seekBack.addEventListener("click", () => {
+    socket.emit("seek", {time: -5000});
+  })
+
+  seekForward.addEventListener("click", () => {
+    socket.emit("seek", {time: 5000});
+  })
+
   videoInput.addEventListener("keydown", event => {
     if (event.code == "Enter") {
         event.preventDefault();

@@ -15,7 +15,6 @@ function videoVerifier(videoLink)
 /* Gets the video's time in milliseconds */
 function getTime(video)
 {
-  video.time
   return Date.now() - video.start;
 }
 
@@ -26,6 +25,14 @@ function playVideo(video, videoLink)
   video.pause = null;
 }
 
+function seekVideo(video, time)
+{
+  video.start = video.start - time;
+  if(video.start > Date.now()) {
+    video.start = Date.now();
+  }
+}
 
-export {isAnybodyLeader, playVideo, getTime, videoVerifier};
+
+export {isAnybodyLeader, playVideo, seekVideo, getTime, videoVerifier};
 
