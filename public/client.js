@@ -7027,6 +7027,15 @@ function sync(video)
     player.play();
   }
 
+  //if video's pause state is not equal to player's paused state
+  const paused = (video.pause != null);
+  if(paused != player.paused) {
+    if(paused)
+      player.pause();
+    else
+      player.play();
+  }
+
   player.currentTime = videoTime / 1000; //convert milliseconds to seconds
 }
 
@@ -7052,7 +7061,7 @@ function addLeaderControls()
   pause.classList.add("button")
   seekBack.textContent = "<";
   seekForward.textContent = ">";
-  pause.textContent = "=";
+  pause.textContent = "▶";
 
   seekBack.addEventListener("click", () => {
     socket.emit("seek", {time: -5000});
@@ -7064,6 +7073,13 @@ function addLeaderControls()
 
   pause.addEventListener("click", () => {
     socket.emit("toggle-pause");
+    if(pause.classList.contains("activated")) {
+      pause.classList.remove("activated");
+      pause.textContent = "▶";
+    } else {
+      pause.classList.add("activated");
+      pause.textContent = "⏸";
+    }
   })
 
   videoInput.addEventListener("keydown", event => {
@@ -7092,7 +7108,7 @@ function removeLeaderControls()
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(update, 500);
+    setTimeout(update, 200);
 });
 
 

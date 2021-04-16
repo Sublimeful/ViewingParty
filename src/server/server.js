@@ -56,7 +56,7 @@ server.on("connection", (client) => {
     console.log(tools.getTime(currentVideo));
 
     //set video.time to getTime and return getTime
-    if(Math.abs(tools.getTime(currentVideo) - clientTime) >= 2000) {
+    if(Math.abs(tools.getTime(currentVideo) - clientTime) >= 1000) {
       client.emit("sync", {video: currentVideo});
     }
   })
