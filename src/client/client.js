@@ -77,7 +77,6 @@ function update()
 
 function addLeaderControls()
 {
-  
     //<button class="button" id="leader-btn">⚑</button>
   const leaderControls = document.createElement("section");
   const seekBack = document.createElement("button");
