@@ -1,6 +1,8 @@
 import express from "express";
 import { Server } from "socket.io";
+import ss from "socket.io-stream";
 import path from "path";
+import fs from "fs";
 
 import * as tools from "./ServerTools.js";
 
@@ -28,7 +30,15 @@ server.on("connection", (client) => {
   client.isSignedIn = false;
   client.isLeader = false;
 
-  //load the current video for client
+  //when client uploads subtitle
+  ss(client).on('subtitle', (stream, data) => {
+    //write the subtitle data to public/sub.vtt
+    const filename = "public/sub.vtt";
+    stream.pipe(fs.createWriteStream(filename));
+
+    //emit a request to switch subtitle
+    server.emit("switch-subtitle");
+  })
 
   //client toggles leader button
   client.on("toggle-leader", () => {

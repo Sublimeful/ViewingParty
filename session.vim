@@ -9,10 +9,10 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
 endif
 set shortmess=aoO
 badd +1 src/server/VideoManager.js
-badd +50 src/client/client.js
+badd +137 src/client/client.js
 badd +1 src/client/VideoManager.js
 badd +1 src/server/Timer.js
-badd +36 src/server/server.js
+badd +3 src/server/server.js
 badd +9 public/index.css
 badd +20 public/index.html
 badd +1 public/client.js
@@ -44,7 +44,7 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 43 - ((18 * winheight(0) + 13) / 27)
+let s:l = 43 - ((6 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -70,12 +70,12 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 36 - ((15 * winheight(0) + 13) / 27)
+let s:l = 20 - ((19 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 36
-normal! 0
+keepjumps 20
+normal! 014|
 lcd ~/Desktop/viewing-palace
 tabnext
 edit ~/Desktop/viewing-palace/public/index.css
@@ -96,7 +96,7 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 9 - ((5 * winheight(0) + 13) / 27)
+let s:l = 9 - ((2 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -122,12 +122,12 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 47 - ((10 * winheight(0) + 13) / 27)
+let s:l = 6 - ((5 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 47
-normal! 0
+keepjumps 6
+normal! 030|
 lcd ~/Desktop/viewing-palace
 tabnext
 edit ~/Desktop/viewing-palace/public/index.html
@@ -148,14 +148,14 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 20 - ((14 * winheight(0) + 13) / 27)
+let s:l = 20 - ((5 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 20
 normal! 0
 lcd ~/Desktop/viewing-palace
-tabnext 4
+tabnext 2
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0&& getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
@@ -166,6 +166,7 @@ if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :
