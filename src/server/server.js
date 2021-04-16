@@ -14,7 +14,9 @@ const httpServer = app.listen(port, () => {
 });
 const server = new Server(httpServer);
 
+var subtitlePath = "public/sub.vtt";
 var clientList = [];
+
 var currentVideo = {
   link: "",
   start: null,
@@ -30,18 +32,20 @@ server.on("connection", (client) => {
   client.isSignedIn = false;
   client.isLeader = false;
 
-  //emit a request to switch subtitle
-  client.emit("switch-subtitle");
-
   ss(client).on('subtitle', stream => {
     //when client uploads subtitle
 
-    //write the subtitle data to public/sub.vtt
-    const filename = "public/sub.vtt";
-    stream.pipe(fs.createWriteStream(filename));
+    //if sub.vtt exists
+    if (fs.existsSync(subtitlePath)) {
+      //remove the sub.vtt file
+      fs.unlinkSync(subtitlePath);
+    }
 
-    //emit a request to switch subtitle
-    server.emit("switch-subtitle");
+    //write the subtitle data to public/sub.vtt
+    stream.pipe(fs.createWriteStream(subtitlePath));
+
+    //reload subtitles for all
+    server.emit("reload-subtitles");
   })
 
   client.on("toggle-leader", () => {
@@ -65,6 +69,13 @@ server.on("connection", (client) => {
     //if video differs, then sync
     if(clientVideo.link != currentVideo.link) {
       client.emit("sync", {video: currentVideo});
+
+      //if the client just joined and does not have a video on (link == "")
+      //and the subtitle file exists
+      if(!clientVideo.link && fs.existsSync(subtitlePath)) {
+        //reload subtitles for client
+        client.emit("reload-subtitles");
+      }
     }
 
     //set video.time to getTime and return getTime

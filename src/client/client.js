@@ -7,7 +7,7 @@ const controlPanel = document.getElementById("control-panel")
 const player = document.getElementById("video-player")
 
 var currentVideo = {
-  link: null,
+  link: "",
   time: null,
 }
 
@@ -29,21 +29,38 @@ socket.on("sync", data => {
   sync(data.video);
 })
 
-socket.on("switch-subtitle", () => {
-  //if there is a new subtitle, then reload the subtitle
+socket.on("reload-subtitles", () => {
+  reloadSubtitles();
+})
+
+function reloadSubtitles()
+{
+  //if there is a track element then remove that element
   if(document.getElementById("track")) {
     document.getElementById("track").remove();
   }
-  const track = document.createElement("track");
-  track.kind = "captions";
-  track.label = "English";
-  track.srclang = "en";
-  track.src = "/sub.vtt";
-  track.id = "track";
-  track.mode = "showing";
-  track.default = true;
-  player.appendChild(track);
-})
+
+  //checks to see if there is a new subtitle, if not, then continue checking
+  fetch("/sub.vtt").then(res => {
+    if(!res.ok) {
+      throw new Error("Not 2xx response");
+    } else {
+      //if there is a new subtitle, then reload the subtitle
+      const track = document.createElement("track");
+      track.kind = "captions";
+      track.label = "English";
+      track.srclang = "en";
+      track.src = "/sub.vtt";
+      track.id = "track";
+      track.mode = "showing";
+      track.default = true;
+      player.appendChild(track);
+    }
+  }).catch(() => {
+    //check after 500 milliseconds
+    setTimeout(reloadSubtitles, 500);
+  })
+}
 
 function sync(video)
 {
