@@ -62,9 +62,9 @@ function sync(video)
   const paused = (video.pause != null);
 
   //change the paused button based on paused
-  const pauseBtn = document.getElementById("pause")
-  if(pauseBtn)
+  if(document.getElementById("pause"))
   {
+    const pauseBtn = document.getElementById("pause");
     if(paused) {
       pauseBtn.classList.add("activated");
       pauseBtn.textContent = "⏸";
@@ -94,12 +94,13 @@ function update()
 
 function addLeaderControls()
 {
-  //<button class="button" id="leader-btn">⚑</button>
   const leaderControls = document.createElement("section");
   const seekBack = document.createElement("button");
   const videoInput = document.createElement("input");
   const seekForward = document.createElement("button");
   const pause = document.createElement("button");
+  const subtitleLabel = document.createElement("label");
+  const subtitleLabelIcon = document.createElement("i");
   const subtitle = document.createElement("input");
 
   seekBack.classList.add("button");
@@ -108,6 +109,17 @@ function addLeaderControls()
   seekBack.textContent = "<";
   seekForward.textContent = ">";
   pause.textContent = "▶";
+
+  //make the subtitle button look prettier
+  subtitleLabel.style.color = "white";
+  subtitleLabel.htmlFor = "subtitle";
+  subtitleLabel.classList.add("file-upload");
+  subtitleLabel.appendChild(subtitleLabelIcon);
+  subtitleLabelIcon.classList.add("fa");
+  subtitleLabelIcon.classList.add("fa-cloud-upload");
+  subtitleLabel.innerHTML += " Subtitle";
+
+  //set subtitle button to only accept vtt
   subtitle.type = "file";
   subtitle.accept = ".vtt";
 
@@ -168,6 +180,7 @@ function addLeaderControls()
   leaderControls.appendChild(seekForward);
   leaderControls.appendChild(pause);
   leaderControls.appendChild(subtitle);
+  leaderControls.appendChild(subtitleLabel);
   controlPanel.appendChild(leaderControls);
 }
 

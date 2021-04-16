@@ -9,10 +9,10 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
 endif
 set shortmess=aoO
 badd +1 src/server/VideoManager.js
-badd +137 src/client/client.js
+badd +1 src/client/client.js
 badd +1 src/client/VideoManager.js
 badd +1 src/server/Timer.js
-badd +3 src/server/server.js
+badd +35 src/server/server.js
 badd +9 public/index.css
 badd +20 public/index.html
 badd +1 public/client.js
@@ -44,7 +44,7 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 43 - ((6 * winheight(0) + 19) / 38)
+let s:l = 43 - ((36 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -70,12 +70,12 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 20 - ((19 * winheight(0) + 19) / 38)
+let s:l = 31 - ((30 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 20
-normal! 014|
+keepjumps 31
+normal! 0
 lcd ~/Desktop/viewing-palace
 tabnext
 edit ~/Desktop/viewing-palace/public/index.css
@@ -113,6 +113,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '2resize ' . ((&lines * 2 + 20) / 41)
+exe 'vert 2resize ' . ((&columns * 1 + 86) / 172)
 argglobal
 setlocal fdm=marker
 setlocal fde=0
@@ -122,13 +124,29 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 6 - ((5 * winheight(0) + 19) / 38)
+let s:l = 1 - ((0 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 6
-normal! 030|
+keepjumps 1
+normal! 0
 lcd ~/Desktop/viewing-palace
+wincmd w
+argglobal
+enew
+balt ~/Desktop/viewing-palace/src/client/client.js
+setlocal fdm=marker
+setlocal fde=0
+setlocal fmr=<--,-->
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+lcd ~/Desktop/viewing-palace
+wincmd w
+exe '2resize ' . ((&lines * 2 + 20) / 41)
+exe 'vert 2resize ' . ((&columns * 1 + 86) / 172)
 tabnext
 edit ~/Desktop/viewing-palace/public/index.html
 set splitbelow splitright
@@ -166,7 +184,6 @@ if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
-nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

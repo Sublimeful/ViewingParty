@@ -10,6 +10,16 @@ body {
   --highlight-color: red;
 }
 
+input[type="file"] {
+    display: none;
+}
+.file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
 #video-container {
   height: 80vh;
   width: calc(100vw - var(--border-width) * 2);
