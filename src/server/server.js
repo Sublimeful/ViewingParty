@@ -24,6 +24,8 @@ var currentVideo = {
   time: null,
 }
 
+
+
 server.on("connection", (client) => {
   //add client to list
   clientList.push(client);
