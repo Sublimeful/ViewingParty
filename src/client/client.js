@@ -43,6 +43,17 @@ function sync(video)
 
   //if video's pause state is not equal to player's paused state
   const paused = (video.pause != null);
+
+  //change the paused button based on paused
+  if(paused) {
+    pause.classList.add("activated");
+    pause.textContent = "⏸";
+  } else {
+    pause.classList.remove("activated");
+    pause.textContent = "▶";
+  }
+
+  //pause the video accordingly
   if(paused != player.paused) {
     if(paused)
       player.pause();
@@ -108,6 +119,11 @@ function addLeaderControls()
 
   leaderControls.id = "leader-controls";
   leaderControls.style.display = "flex";
+
+  pause.id = "pause";
+  seekBack.id = "seek-back";
+  seekForward.id = "seek-forward";
+  videoInput.id = "video-input";
 
   leaderControls.appendChild(seekBack);
   leaderControls.appendChild(videoInput);
