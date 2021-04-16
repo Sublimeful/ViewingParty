@@ -64,9 +64,6 @@ server.on("connection", (client) => {
       client.emit("sync", {video: currentVideo});
     }
 
-    //log time
-    console.log(tools.getTime(currentVideo));
-
     //set video.time to getTime and return getTime
     if(Math.abs(tools.getTime(currentVideo) - clientTime) >= 1000) {
       client.emit("sync", {video: currentVideo});
@@ -76,6 +73,12 @@ server.on("connection", (client) => {
   client.on("toggle-pause", () => {
     if(!client.isLeader) return;
     tools.togglePauseVideo(currentVideo);
+
+    //tools.getTime calibrates video.time
+    tools.getTime(currentVideo);
+
+    //then we sync the user up!
+    server.emit("sync", {video: currentVideo});
   })
 
   //client syncs
