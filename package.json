@@ -1,0 +1,34 @@
+{
+  "name": "viewing-palace",
+  "version": "1.0.0",
+  "description": "THE viewing palace",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "npm run concurrently",
+    "concurrently": "concurrently --kill-others \"npm run nodemon\" \"npm run watchify\"",
+    "nodemon": "nodemon src/server/server.js",
+    "watchify": "watchify src/client/client.js -o public/client.js -v"
+  },
+  "repository": "Viewing Palace",
+  "keywords": [
+    "viewing",
+    "palace"
+  ],
+  "author": "Sublimeful",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.11",
+    "concurrently": "^5.3.0",
+    "crypto-js": "^4.0.0",
+    "css-element-queries": "^1.2.3",
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "node-fetch": "^2.6.1",
+    "nodemon": "^2.0.7",
+    "socket.io": "^3.1.1",
+    "socket.io-client": "^3.1.1",
+    "watchify": "^4.0.0",
+    "youtube-player": "^5.5.2"
+  }
+}

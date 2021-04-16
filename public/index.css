@@ -1,0 +1,44 @@
+body {
+  margin: 0px;
+  background-color: black;
+  height: 100vh;
+}
+
+:root {
+  overflow: hidden;
+  --border-width: 1px;
+  --highlight-color: red;
+}
+
+#video-container {
+  height: 80vh;
+  width: calc(100vw - var(--border-width) * 2);
+  border: var(--border-width) solid var(--highlight-color);
+}
+#video-container video {
+  height: 100%;
+  width: 100%;
+}
+
+#control-panel {
+  height: calc(20vh - var(--border-width) * 3);
+  width: calc(100vw - var(--border-width) * 2);
+  border: var(--border-width) solid var(--highlight-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#control-panel button {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background-color: red;
+  border-color: red;
+  box-shadow: 0 0 15px red;
+  margin: 0 5px;
+}
+.activated {
+  background-color: green !important;
+  border-color: green !important;
+  box-shadow: 0 0 15px green !important;
+}
