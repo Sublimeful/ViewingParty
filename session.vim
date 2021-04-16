@@ -8,15 +8,15 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +0 src/server/VideoManager.js
-badd +92 src/client/client.js
+badd +1 src/server/VideoManager.js
+badd +114 src/client/client.js
 badd +1 src/client/VideoManager.js
-badd +0 src/server/Timer.js
-badd +1 src/server/server.js
-badd +18 public/index.css
-badd +11 public/index.html
-badd +0 public/client.js
-badd +0 package-lock.json
+badd +1 src/server/Timer.js
+badd +36 src/server/server.js
+badd +9 public/index.css
+badd +20 public/index.html
+badd +1 public/client.js
+badd +1 package-lock.json
 badd +28 package.json
 badd +10 src/server/ServerTools.js
 argglobal
@@ -36,7 +36,6 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 argglobal
-balt src/server/ServerTools.js
 setlocal fdm=marker
 setlocal fde=0
 setlocal fmr=<--,-->
@@ -45,11 +44,11 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 21 - ((20 * winheight(0) + 18) / 36)
+let s:l = 43 - ((24 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 21
+keepjumps 43
 normal! 0
 lcd ~/Desktop/viewing-palace
 tabnext
@@ -63,7 +62,6 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 argglobal
-balt ~/Desktop/viewing-palace/src/server/server.js
 setlocal fdm=marker
 setlocal fde=0
 setlocal fmr=<--,-->
@@ -90,7 +88,6 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 argglobal
-balt ~/Desktop/viewing-palace/public/index.css
 setlocal fdm=marker
 setlocal fde=0
 setlocal fmr=<--,-->
@@ -99,7 +96,7 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 9 - ((6 * winheight(0) + 18) / 36)
+let s:l = 9 - ((7 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -125,11 +122,11 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 78 - ((9 * winheight(0) + 18) / 36)
+let s:l = 43 - ((14 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 78
+keepjumps 43
 normal! 0
 lcd ~/Desktop/viewing-palace
 tabnext
@@ -143,7 +140,6 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 argglobal
-balt ~/Desktop/viewing-palace/public/index.html
 setlocal fdm=marker
 setlocal fde=0
 setlocal fmr=<--,-->
@@ -159,7 +155,7 @@ normal! zt
 keepjumps 20
 normal! 0
 lcd ~/Desktop/viewing-palace
-tabnext 5
+tabnext 4
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0&& getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
@@ -170,6 +166,7 @@ if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

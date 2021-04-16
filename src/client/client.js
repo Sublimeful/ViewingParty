@@ -36,21 +36,26 @@ function sync(video)
   if(player.src != videoLink) {
     currentVideo.link = videoLink;
     player.src = videoLink;
-    video.pause();
-    video.currentTime = 0;
+    player.pause();
+    player.currentTime = 0;
     player.play();
   }
 
   //if video's pause state is not equal to player's paused state
   const paused = (video.pause != null);
 
+
   //change the paused button based on paused
-  if(paused) {
-    pause.classList.add("activated");
-    pause.textContent = "⏸";
-  } else {
-    pause.classList.remove("activated");
-    pause.textContent = "▶";
+  const pauseBtn = document.getElementById("pause")
+  if(pauseBtn)
+  {
+    if(paused) {
+      pauseBtn.classList.add("activated");
+      pauseBtn.textContent = "⏸";
+    } else {
+      pauseBtn.classList.remove("activated");
+      pauseBtn.textContent = "▶";
+    }
   }
 
   //pause the video accordingly
