@@ -112,19 +112,31 @@ function update()
 function addLeaderControls()
 {
   const leaderControls = document.createElement("section");
-  const seekBack = document.createElement("button");
+  const seekBBig = document.createElement("button");
+  const seekBSmall = document.createElement("button");
+  const seekBTiny = document.createElement("button");
   const videoInput = document.createElement("input");
-  const seekForward = document.createElement("button");
+  const seekFTiny = document.createElement("button");
+  const seekFSmall = document.createElement("button");
+  const seekFBig = document.createElement("button");
   const pause = document.createElement("button");
   const subtitleLabel = document.createElement("label");
   const subtitleLabelIcon = document.createElement("i");
   const subtitle = document.createElement("input");
 
-  seekBack.classList.add("button");
-  seekForward.classList.add("button");
+  seekBBig.classList.add("button");
+  seekBSmall.classList.add("button");
+  seekBTiny.classList.add("button");
+  seekFTiny.classList.add("button");
+  seekFSmall.classList.add("button");
+  seekFBig.classList.add("button");
   pause.classList.add("button")
-  seekBack.textContent = "<";
-  seekForward.textContent = ">";
+  seekBBig.textContent = "<<<";
+  seekBSmall.textContent = "<<";
+  seekBTiny.textContent = "<";
+  seekFTiny.textContent = ">";
+  seekFSmall.textContent = ">>";
+  seekFBig.textContent = ">>>";
   pause.textContent = "▶";
 
   //make the subtitle button look prettier
@@ -140,12 +152,24 @@ function addLeaderControls()
   subtitle.type = "file";
   subtitle.accept = ".vtt";
 
-  seekBack.addEventListener("click", () => {
+  //seeking the video
+  seekBBig.addEventListener("click", () => {
+    socket.emit("seek", {time: -60000});
+  })
+  seekBSmall.addEventListener("click", () => {
+    socket.emit("seek", {time: -10000});
+  })
+  seekBTiny.addEventListener("click", () => {
     socket.emit("seek", {time: -5000});
   })
-
-  seekForward.addEventListener("click", () => {
+  seekFTiny.addEventListener("click", () => {
     socket.emit("seek", {time: 5000});
+  })
+  seekFSmall.addEventListener("click", () => {
+    socket.emit("seek", {time: 10000});
+  })
+  seekFBig.addEventListener("click", () => {
+    socket.emit("seek", {time: 60000});
   })
 
   //toggle pause button activation when pressed
@@ -197,14 +221,14 @@ function addLeaderControls()
   leaderControls.style.display = "flex";
 
   pause.id = "pause";
-  seekBack.id = "seek-back";
-  seekForward.id = "seek-forward";
-  videoInput.id = "video-input";
-  subtitle.id = "subtitle";
 
-  leaderControls.appendChild(seekBack);
+  leaderControls.appendChild(seekBBig);
+  leaderControls.appendChild(seekBSmall);
+  leaderControls.appendChild(seekBTiny);
   leaderControls.appendChild(videoInput);
-  leaderControls.appendChild(seekForward);
+  leaderControls.appendChild(seekFTiny);
+  leaderControls.appendChild(seekFSmall);
+  leaderControls.appendChild(seekFBig);
   leaderControls.appendChild(pause);
   leaderControls.appendChild(subtitle);
   leaderControls.appendChild(subtitleLabel);
