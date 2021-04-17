@@ -45,9 +45,6 @@ server.on("connection", (client) => {
 
     //write the subtitle data to public/sub.vtt
     stream.pipe(fs.createWriteStream(subtitlePath));
-
-    //reload subtitles for all
-    server.emit("reload-subtitles");
   })
 
   client.on("toggle-leader", () => {
@@ -71,13 +68,6 @@ server.on("connection", (client) => {
     //if video differs, then sync
     if(clientVideo.link != currentVideo.link) {
       client.emit("sync", {video: currentVideo});
-
-      //if the client just joined and does not have a video on (link == "")
-      //and the subtitle file exists
-      if(!clientVideo.link && fs.existsSync(subtitlePath)) {
-        //reload subtitles for client
-        client.emit("reload-subtitles");
-      }
     }
 
     //set video.time to getTime and return getTime

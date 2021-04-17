@@ -29,10 +29,6 @@ socket.on("sync", data => {
   sync(data.video);
 })
 
-socket.on("reload-subtitles", () => {
-  reloadSubtitles();
-})
-
 function reloadSubtitles()
 {
   //if there is a track element then remove that element
@@ -222,5 +218,8 @@ function removeLeaderControls()
 
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(update, 200);
+
+  // reload the subtitles each time a video starts playing
+  player.oncanplay = reloadSubtitles;
 });
 
