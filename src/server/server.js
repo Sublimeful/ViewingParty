@@ -7,7 +7,7 @@ import fs from "fs";
 import * as tools from "./ServerTools.js";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 const httpServer = app.listen(port, () => {
   console.log("server is listening on port " + port + "!");
