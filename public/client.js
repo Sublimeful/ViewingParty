@@ -14746,6 +14746,7 @@ function addLeaderControls()
   leaderControls.id = "leader-controls";
   leaderControls.style.display = "flex";
   pause.id = "pause";
+  subtitle.id = "subtitle";
 
   //make the subtitle button look prettier
   subtitleLabel.style.color = "white";
