@@ -172,6 +172,32 @@ function addLeaderControls()
     socket.emit("seek", {time: 60000});
   })
 
+  //seeking the video keybinds
+  seekBBig.addEventListener("keydown", event => {
+    if(event.code == "KeyH")
+      socket.emit("seek", {time: -60000});
+  })
+  seekBSmall.addEventListener("keydown", event => {
+    if(event.code == "KeyJ")
+      socket.emit("seek", {time: -10000});
+  })
+  seekBTiny.addEventListener("keydown", event => {
+    if(event.code == "ArrowLeft")
+      socket.emit("seek", {time: -5000});
+  })
+  seekFTiny.addEventListener("keydown", event => {
+    if(event.code == "ArrowRight")
+      socket.emit("seek", {time: 5000});
+  })
+  seekFSmall.addEventListener("keydown", event => {
+    if(event.code == "KeyK")
+      socket.emit("seek", {time: 10000});
+  })
+  seekFBig.addEventListener("keydown", event => {
+    if(event.code == "KeyL")
+      socket.emit("seek", {time: 60000});
+  })
+
   //toggle pause button activation when pressed
   pause.addEventListener("click", () => {
     socket.emit("toggle-pause");
@@ -181,6 +207,20 @@ function addLeaderControls()
     } else {
       pause.classList.add("activated");
       pause.textContent = "⏸";
+    }
+  })
+
+  //toggle pause button keybind
+  pause.addEventListener("keydown", event => {
+    if(event.code == "Space" || event.code == "KeyP") {
+      socket.emit("toggle-pause");
+      if(pause.classList.contains("activated")) {
+        pause.classList.remove("activated");
+        pause.textContent = "▶";
+      } else {
+        pause.classList.add("activated");
+        pause.textContent = "⏸";
+      }
     }
   })
 
