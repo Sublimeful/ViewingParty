@@ -139,6 +139,10 @@ function togglePause()
 //act on event
 function leaderControlsKeydown(event)
 {
+  //if videoInput is focused, then dont react to keys
+  const videoInput = document.getElementById("video-input");
+  if(document.activeElement == videoInput) return;
+
   switch(event.code)
   {
     case "Space":
@@ -190,6 +194,7 @@ function addLeaderControls()
   seekFSmall.classList.add("button");
   seekFBig.classList.add("button");
   pause.classList.add("button")
+
   seekBBig.textContent = "<<<";
   seekBSmall.textContent = "<<";
   seekBTiny.textContent = "<";
@@ -197,9 +202,11 @@ function addLeaderControls()
   seekFSmall.textContent = ">>";
   seekFBig.textContent = ">>>";
   pause.textContent = "▶";
+
   leaderControls.id = "leader-controls";
   pause.id = "pause";
   subtitle.id = "subtitle";
+  videoInput.id = "video-input";
 
   //leaderControls styling
   leaderControls.style.display = "flex";
