@@ -1,12 +1,12 @@
 body {
   margin: 0px;
-  background-color: black;
   height: 100vh;
-  width: 100vw;
+  width: max-content;
 }
 
 :root {
-  overflow: hidden;
+  background-color: black;
+  overflow-y: auto;
 }
 
 input[type="file"] {
@@ -20,7 +20,7 @@ input[type="file"] {
 }
 
 #video-container {
-  height: 80%;
+  height: calc(95% - 52px);
 }
 #video-container video {
   height: 100%;
@@ -28,8 +28,8 @@ input[type="file"] {
 }
 
 #progress-bar {
-  width: 100vw;
-  height: 2%;
+  width: 100%;
+  height: 10px;
 }
 #progress-bar div {
   height: 100%;
@@ -40,6 +40,7 @@ input[type="file"] {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: calc(5% + 40px);
 }
 #control-panel button {
   height: 40px;

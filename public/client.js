@@ -14743,10 +14743,13 @@ function addLeaderControls()
   seekFSmall.textContent = ">>";
   seekFBig.textContent = ">>>";
   pause.textContent = "▶";
-  leaderControls.style.display = "flex";
   leaderControls.id = "leader-controls";
   pause.id = "pause";
   subtitle.id = "subtitle";
+
+  //leaderControls styling
+  leaderControls.style.display = "flex";
+  leaderControls.style.alignItems = "center";
 
   //make the subtitle button look prettier
   subtitleLabel.style.color = "white";
