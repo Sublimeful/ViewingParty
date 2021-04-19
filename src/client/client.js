@@ -108,6 +108,9 @@ function update()
   //send a sync emit
   socket.emit("sync", {video: currentVideo});
 
+  //update after 200 milliseconds
+  setTimeout(update, 200);
+
   //dont divide by 0 or by NaN
   if(!player.duration) return;
 
@@ -116,9 +119,6 @@ function update()
   const progress = player.currentTime / player.duration;
 
   bar.style.width = progress * 100 + "%";
-
-  //update after 200 milliseconds
-  setTimeout(update, 200);
 }
 
 function togglePause()
