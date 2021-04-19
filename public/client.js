@@ -14551,11 +14551,13 @@ const socket = io();
 const leaderBtn = document.getElementById("leader-btn")
 const controlPanel = document.getElementById("control-panel")
 const player = document.getElementById("video-player")
+const progressBar = document.getElementById("progress-bar")
 
 var currentVideo = {
   link: "",
   time: null,
 }
+
 
 leaderBtn.addEventListener("click", () => {
   socket.emit("toggle-leader");
@@ -14651,8 +14653,64 @@ function update()
   //send a sync emit
   socket.emit("sync", {video: currentVideo});
 
-  //update after 500 milliseconds
-  setTimeout(update, 500);
+  //update after 200 milliseconds
+  setTimeout(update, 200);
+
+  //dont divide by 0 or by NaN
+  if(!player.duration) return;
+
+  //update progress bar
+  const bar = progressBar.children[0];
+  const progress = player.currentTime / player.duration;
+
+  bar.style.width = progress * 100 + "%";
+}
+
+//toggle pause button activation when pressed
+function togglePause()
+{
+  socket.emit("toggle-pause");
+
+  const pause = document.getElementById("pause");
+  if(pause.classList.contains("activated")) {
+    pause.classList.remove("activated");
+    pause.textContent = "▶";
+  } else {
+    pause.classList.add("activated");
+    pause.textContent = "⏸";
+  }
+}
+
+//act on event
+function leaderControlsKeydown(event)
+{
+  switch(event.code)
+  {
+    case "Space":
+      togglePause();
+      break;
+    case "KeyP":
+      togglePause();
+      break;
+    case "KeyH":
+      socket.emit("seek", {time: -60000});
+      break;
+    case "KeyJ":
+      socket.emit("seek", {time: -10000});
+      break;
+    case "KeyK":
+      socket.emit("seek", {time: 10000});
+      break;
+    case "KeyL":
+      socket.emit("seek", {time: 60000});
+      break;
+    case "ArrowLeft":
+      socket.emit("seek", {time: -5000});
+      break;
+    case "ArrowRight":
+      socket.emit("seek", {time: 5000});
+      break;
+  }
 }
 
 function addLeaderControls()
@@ -14684,6 +14742,9 @@ function addLeaderControls()
   seekFSmall.textContent = ">>";
   seekFBig.textContent = ">>>";
   pause.textContent = "▶";
+  leaderControls.id = "leader-controls";
+  leaderControls.style.display = "flex";
+  pause.id = "pause";
 
   //make the subtitle button look prettier
   subtitleLabel.style.color = "white";
@@ -14718,17 +14779,8 @@ function addLeaderControls()
     socket.emit("seek", {time: 60000});
   })
 
-  //toggle pause button activation when pressed
-  pause.addEventListener("click", () => {
-    socket.emit("toggle-pause");
-    if(pause.classList.contains("activated")) {
-      pause.classList.remove("activated");
-      pause.textContent = "▶";
-    } else {
-      pause.classList.add("activated");
-      pause.textContent = "⏸";
-    }
-  })
+  //pause click event
+  pause.addEventListener("click", togglePause);
 
   //if a file is uploaded to subtitle, then activate subtitle label
   subtitle.onchange = () => {
@@ -14739,6 +14791,7 @@ function addLeaderControls()
     }
   }
 
+  //video input event
   videoInput.addEventListener("keydown", event => {
     if (event.code == "Enter") {
       event.preventDefault();
@@ -14763,11 +14816,6 @@ function addLeaderControls()
     }
   })
 
-  leaderControls.id = "leader-controls";
-  leaderControls.style.display = "flex";
-
-  pause.id = "pause";
-
   leaderControls.appendChild(seekBBig);
   leaderControls.appendChild(seekBSmall);
   leaderControls.appendChild(seekBTiny);
@@ -14779,10 +14827,17 @@ function addLeaderControls()
   leaderControls.appendChild(subtitle);
   leaderControls.appendChild(subtitleLabel);
   controlPanel.appendChild(leaderControls);
+
+  //add keybinds
+  document.addEventListener("keydown", leaderControlsKeydown);
 }
 
 function removeLeaderControls()
 {
+  //remove keybinds
+  document.removeEventListener("keydown", leaderControlsKeydown);
+
+  //remove leader control panel
   document.getElementById("leader-controls").remove();
 }
 

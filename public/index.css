@@ -6,8 +6,6 @@ body {
 
 :root {
   overflow: hidden;
-  --border-width: 1px;
-  --highlight-color: red;
 }
 
 input[type="file"] {
@@ -21,19 +19,23 @@ input[type="file"] {
 }
 
 #video-container {
-  height: 80vh;
-  width: calc(100vw - var(--border-width) * 2);
-  border: var(--border-width) solid var(--highlight-color);
+  height: 80%;
 }
 #video-container video {
   height: 100%;
   width: 100%;
 }
 
+#progress-bar {
+  width: 100vw;
+  height: 2%;
+}
+#progress-bar div {
+  height: 100%;
+  background-color: white;
+}
+
 #control-panel {
-  height: calc(20vh - var(--border-width) * 3);
-  width: calc(100vw - var(--border-width) * 2);
-  border: var(--border-width) solid var(--highlight-color);
   display: flex;
   justify-content: center;
   align-items: center;
