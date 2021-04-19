@@ -14667,9 +14667,9 @@ function update()
   bar.style.width = progress * 100 + "%";
 }
 
-//toggle pause button activation when pressed
 function togglePause()
 {
+  //toggle pause button activation
   socket.emit("toggle-pause");
 
   const pause = document.getElementById("pause");
@@ -14685,6 +14685,7 @@ function togglePause()
 function leaderControlsKeydown(event)
 {
   //act on keydown event
+
   //if videoInput is focused, then dont react to keys
   const videoInput = document.getElementById("video-input");
   if(document.activeElement == videoInput) return;
