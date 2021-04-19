@@ -136,13 +136,14 @@ function togglePause()
   }
 }
 
-//act on event
+//act on keydown event
 function leaderControlsKeydown(event)
 {
   //if videoInput is focused, then dont react to keys
   const videoInput = document.getElementById("video-input");
   if(document.activeElement == videoInput) return;
 
+  //react to keys
   switch(event.code)
   {
     case "Space":
