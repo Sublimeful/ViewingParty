@@ -196,12 +196,7 @@ function addLeaderControls()
   seekFTiny.textContent = ">";
   seekFSmall.textContent = ">>";
   seekFBig.textContent = ">>>";
-  if(video.paused) {
-    pause.textContent = "▶";
-  } else {
-    pause.classList.add("activated");
-    pause.textContent = "⏸";
-  }
+  pause.textContent = "▶";
   leaderControls.id = "leader-controls";
   pause.id = "pause";
   subtitle.id = "subtitle";
