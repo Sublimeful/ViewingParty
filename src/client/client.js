@@ -138,8 +138,6 @@ function togglePause()
 
 function leaderControlsKeydown(event)
 {
-  //act on keydown event
-
   //if videoInput is focused, then dont react to keys
   const videoInput = document.getElementById("video-input");
   if(document.activeElement == videoInput) return;
@@ -147,7 +145,7 @@ function leaderControlsKeydown(event)
   //prevent default things from happening and only focus on the inputs
   event.preventDefault();
 
-  //react to keys
+  //act on key that is pressed
   switch(event.code)
   {
     case "Space":
