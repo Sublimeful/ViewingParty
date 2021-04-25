@@ -195,21 +195,21 @@ function leaderControlsKeydown(event)
 function addLeaderControls()
 {
   const leaderControls = document.createElement("section");
+  const pause = document.createElement("button");
   const seekBTiny = document.createElement("button");
   const videoInput = document.createElement("input");
   const seekFTiny = document.createElement("button");
-  const pause = document.createElement("button");
   const subtitleLabel = document.createElement("label");
   const subtitleLabelIcon = document.createElement("i");
   const subtitle = document.createElement("input");
 
+  pause.classList.add("button")
   seekBTiny.classList.add("button");
   seekFTiny.classList.add("button");
-  pause.classList.add("button")
 
+  pause.textContent = "▶";
   seekBTiny.textContent = "<";
   seekFTiny.textContent = ">";
-  pause.textContent = "▶";
 
   leaderControls.id = "leader-controls";
   pause.id = "pause";
@@ -233,6 +233,9 @@ function addLeaderControls()
   subtitle.type = "file";
   subtitle.accept = ".vtt";
 
+  //pause click event
+  pause.addEventListener("click", togglePause);
+
   //seeking the video
   seekBTiny.addEventListener("click", () => {
     socket.emit("seek", {time: -5000});
@@ -240,9 +243,6 @@ function addLeaderControls()
   seekFTiny.addEventListener("click", () => {
     socket.emit("seek", {time: 5000});
   })
-
-  //pause click event
-  pause.addEventListener("click", togglePause);
 
   //if a file is uploaded to subtitle, then activate subtitle label
   subtitle.onchange = () => {
@@ -278,10 +278,10 @@ function addLeaderControls()
     }
   })
 
+  leaderControls.appendChild(pause);
   leaderControls.appendChild(seekBTiny);
   leaderControls.appendChild(videoInput);
   leaderControls.appendChild(seekFTiny);
-  leaderControls.appendChild(pause);
   leaderControls.appendChild(subtitle);
   leaderControls.appendChild(subtitleLabel);
   controlPanel.appendChild(leaderControls);
