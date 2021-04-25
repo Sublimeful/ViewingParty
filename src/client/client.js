@@ -159,9 +159,6 @@ function leaderControlsKeydown(event)
   const videoInput = document.getElementById("video-input");
   if(document.activeElement == videoInput) return;
 
-  //prevent default things from happening and only focus on the inputs
-  event.preventDefault();
-
   //compare keycode and act on key that is pressed
   switch(event.code)
   {
@@ -189,7 +186,14 @@ function leaderControlsKeydown(event)
     case "ArrowRight":
       socket.emit("seek", {time: 5000});
       break;
+    default:
+      //return if nothing matches
+      return;
   }
+
+  //if key matches with one of the switch cases, then
+  //prevent default things from happening and only focus on the inputs
+  event.preventDefault();
 }
 
 function addLeaderControls()
