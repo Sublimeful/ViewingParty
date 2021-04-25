@@ -144,6 +144,9 @@ function leaderControlsKeydown(event)
   const videoInput = document.getElementById("video-input");
   if(document.activeElement == videoInput) return;
 
+  //prevent all other default things from happening and only focus on the inputs
+  event.preventDefault();
+
   //react to keys
   switch(event.code)
   {
