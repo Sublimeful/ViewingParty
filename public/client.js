@@ -14552,6 +14552,8 @@ const leaderBtn = document.getElementById("leader-btn")
 const controlPanel = document.getElementById("control-panel")
 const player = document.getElementById("video-player")
 const progressBar = document.getElementById("progress-bar")
+const audioBtn = document.getElementById("audio")
+const volumeSlider = document.getElementById("volume")
 
 var currentVideo = {
   link: "",
@@ -14559,6 +14561,21 @@ var currentVideo = {
 }
 
 
+
+volumeSlider.addEventListener("input", () => {
+  audioBtn.classList.add("activated");
+  player.muted = false;
+  player.volume = volumeSlider.value / 100;
+})
+
+audioBtn.addEventListener("click", () => {
+  player.muted = !player.muted;
+  if(!player.muted) {
+    audioBtn.classList.add("activated");
+  } else {
+    audioBtn.classList.remove("activated");
+  }
+})
 
 leaderBtn.addEventListener("click", () => {
   socket.emit("toggle-leader");
@@ -14724,32 +14741,20 @@ function leaderControlsKeydown(event)
 function addLeaderControls()
 {
   const leaderControls = document.createElement("section");
-  const seekBBig = document.createElement("button");
-  const seekBSmall = document.createElement("button");
   const seekBTiny = document.createElement("button");
   const videoInput = document.createElement("input");
   const seekFTiny = document.createElement("button");
-  const seekFSmall = document.createElement("button");
-  const seekFBig = document.createElement("button");
   const pause = document.createElement("button");
   const subtitleLabel = document.createElement("label");
   const subtitleLabelIcon = document.createElement("i");
   const subtitle = document.createElement("input");
 
-  seekBBig.classList.add("button");
-  seekBSmall.classList.add("button");
   seekBTiny.classList.add("button");
   seekFTiny.classList.add("button");
-  seekFSmall.classList.add("button");
-  seekFBig.classList.add("button");
   pause.classList.add("button")
 
-  seekBBig.textContent = "<<<";
-  seekBSmall.textContent = "<<";
   seekBTiny.textContent = "<";
   seekFTiny.textContent = ">";
-  seekFSmall.textContent = ">>";
-  seekFBig.textContent = ">>>";
   pause.textContent = "▶";
 
   leaderControls.id = "leader-controls";
@@ -14775,23 +14780,11 @@ function addLeaderControls()
   subtitle.accept = ".vtt";
 
   //seeking the video
-  seekBBig.addEventListener("click", () => {
-    socket.emit("seek", {time: -60000});
-  })
-  seekBSmall.addEventListener("click", () => {
-    socket.emit("seek", {time: -10000});
-  })
   seekBTiny.addEventListener("click", () => {
     socket.emit("seek", {time: -5000});
   })
   seekFTiny.addEventListener("click", () => {
     socket.emit("seek", {time: 5000});
-  })
-  seekFSmall.addEventListener("click", () => {
-    socket.emit("seek", {time: 10000});
-  })
-  seekFBig.addEventListener("click", () => {
-    socket.emit("seek", {time: 60000});
   })
 
   //pause click event
@@ -14831,13 +14824,9 @@ function addLeaderControls()
     }
   })
 
-  leaderControls.appendChild(seekBBig);
-  leaderControls.appendChild(seekBSmall);
   leaderControls.appendChild(seekBTiny);
   leaderControls.appendChild(videoInput);
   leaderControls.appendChild(seekFTiny);
-  leaderControls.appendChild(seekFSmall);
-  leaderControls.appendChild(seekFBig);
   leaderControls.appendChild(pause);
   leaderControls.appendChild(subtitle);
   leaderControls.appendChild(subtitleLabel);
@@ -14859,8 +14848,11 @@ function removeLeaderControls()
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(update, 200);
 
-  // reload the subtitles each time a video starts playing
+  //reload the subtitles each time a video starts playing
   player.oncanplay = reloadSubtitles;
+
+  //set player default volume to 50%
+  player.volume = 0.5;
 });
 
 
