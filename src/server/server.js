@@ -103,6 +103,11 @@ server.on("connection", (client) => {
     //when client plays a link
     tools.playVideo(currentVideo, data.link);
   })
+  
+  client.on("ping", (cb) => {
+    if (typeof cb === "function")
+      cb();
+  });
 
   client.on("disconnect", () => {
     //when client exits
