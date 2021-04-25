@@ -14691,7 +14691,7 @@ function leaderControlsKeydown(event)
   //prevent default things from happening and only focus on the inputs
   event.preventDefault();
 
-  //act on key that is pressed
+  //compare keycode and act on key that is pressed
   switch(event.code)
   {
     case "Space":
