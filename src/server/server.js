@@ -103,8 +103,8 @@ server.on("connection", (client) => {
   client.on("play-video", async data => {
     try {
       let info = await ytdl.getInfo(data.link);
-      let format = ytdl.chooseFormat(info.formats, 'highest');
-      tools.playVideo(currentVideo, format.url);
+      let formats = ytdl.filterFormats(info.formats, 'videoandaudio');
+      tools.playVideo(currentVideo, formats[formats.length - 1].url);
     } catch {
       //if youtube url is invalid or does not exist
       tools.playVideo(currentVideo, data.link);
