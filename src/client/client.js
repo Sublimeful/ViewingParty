@@ -141,8 +141,6 @@ function update()
   const progress = player.currentTime / player.duration;
 
   bar.style.width = progress * 100 + "%";
-
-  console.log(player.currentTime * 1000);
 }
 
 function togglePause()
