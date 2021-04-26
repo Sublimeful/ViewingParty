@@ -81,6 +81,7 @@ function reloadSubtitles()
 function sync(video)
 {
   const videoLink = video.link;
+
   //offset time by 200 to counter lag
   const videoTime = video.time + 200;
 
