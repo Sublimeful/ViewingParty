@@ -107,11 +107,11 @@ function sync(video)
     }
   }
 
-  if(videoTime / 1000 <= player.duration) {
-    //if videoTime is less than or equal to the player duration
-    //convert milliseconds to seconds and set the player's time
-    player.currentTime = videoTime / 1000;
-  }
+  //convert milliseconds to seconds and set the player's time
+  player.currentTime = videoTime / 1000;
+
+  //if videoTime is greater than or equal to the player duration then return
+  if(videoTime / 1000 >= player.duration) return;
 
   //pause the video accordingly
   if(paused != player.paused) {
