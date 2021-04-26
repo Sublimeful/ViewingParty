@@ -309,6 +309,7 @@ function removeLeaderControls()
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  //start update loop after 200 milliseconds
   setTimeout(update, 200);
 
   //reload the subtitles each time a video starts playing
