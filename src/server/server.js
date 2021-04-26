@@ -1,6 +1,7 @@
 import express from "express";
 import { Server } from "socket.io";
 import ss from "socket.io-stream";
+import ytdl from "ytdl-core";
 import path from "path";
 import fs from "fs";
 
@@ -99,9 +100,15 @@ server.on("connection", (client) => {
     server.emit("sync", {video: currentVideo});
   })
 
-  client.on("play-video", data => {
-    //when client plays a link
-    tools.playVideo(currentVideo, data.link);
+  client.on("play-video", async data => {
+    try {
+      let info = await ytdl.getInfo(data.link);
+      let format = ytdl.chooseFormat(info.formats, 'highest');
+      tools.playVideo(currentVideo, format.url);
+    } catch {
+      //if youtube url is invalid or does not exist
+      tools.playVideo(currentVideo, data.link);
+    }
   })
 
   client.on("disconnect", () => {
