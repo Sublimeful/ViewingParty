@@ -46,7 +46,7 @@ socket.on("unleader", () => {
 })
 
 socket.on("sync", data => {
-  sync(data.video);
+  sync(data);
 })
 
 function reloadSubtitles()
@@ -78,11 +78,18 @@ function reloadSubtitles()
   })
 }
 
-function sync(video)
+function sync(data)
 {
+  const video = data.video;
+  const latency = Date.now() - data.time;
+
   const videoLink = video.link;
-  //offset time by 200 to counter lag
-  const videoTime = video.time + 200;
+
+  //offset time by latency to counter lag
+  const videoTime = video.time + latency;
+
+  console.log(`latency: ${latency}`)
+  console.log(`videoTime: ${videoTime}`)
 
   //if the src is not the same then change src
   if(player.src != videoLink) {

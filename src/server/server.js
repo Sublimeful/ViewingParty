@@ -68,13 +68,13 @@ server.on("connection", (client) => {
 
     //if video differs, then sync
     if(clientVideo.link != currentVideo.link) {
-      client.emit("sync", {video: currentVideo});
+      client.emit("sync", {video: currentVideo, time: Date.now()});
     }
 
     //if the difference between client time and server time
     //is greater than 200 milliseconds then sync client with server
     if(Math.abs(tools.getTime(currentVideo) - clientTime) > 200) {
-      client.emit("sync", {video: currentVideo});
+      client.emit("sync", {video: currentVideo, time: Date.now()});
     }
     console.log(currentVideo.time);
   })
