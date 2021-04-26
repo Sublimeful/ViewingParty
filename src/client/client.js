@@ -81,7 +81,8 @@ function reloadSubtitles()
 function sync(video)
 {
   const videoLink = video.link;
-  const videoTime = video.time;
+  //offset time by 200 to counter lag
+  const videoTime = video.time + 200;
 
   //if the src is not the same then change src
   if(player.src != videoLink) {
@@ -139,6 +140,8 @@ function update()
   const progress = player.currentTime / player.duration;
 
   bar.style.width = progress * 100 + "%";
+
+  console.log(player.currentTime * 1000);
 }
 
 function togglePause()

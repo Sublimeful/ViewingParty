@@ -14627,7 +14627,8 @@ function reloadSubtitles()
 function sync(video)
 {
   const videoLink = video.link;
-  const videoTime = video.time;
+  //offset time by 200 to counter lag
+  const videoTime = video.time + 200;
 
   //if the src is not the same then change src
   if(player.src != videoLink) {
@@ -14651,8 +14652,11 @@ function sync(video)
     }
   }
 
-  //convert milliseconds to seconds and set the player's time
-  player.currentTime = videoTime / 1000;
+  if(videoTime / 1000 <= player.duration) {
+    //if videoTime is less than or equal to the player duration
+    //convert milliseconds to seconds and set the player's time
+    player.currentTime = videoTime / 1000;
+  }
 
   //pause the video accordingly
   if(paused != player.paused) {
@@ -14682,6 +14686,8 @@ function update()
   const progress = player.currentTime / player.duration;
 
   bar.style.width = progress * 100 + "%";
+
+  console.log(player.currentTime * 1000);
 }
 
 function togglePause()

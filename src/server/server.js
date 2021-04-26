@@ -72,10 +72,11 @@ server.on("connection", (client) => {
     }
 
     //if the difference between client time and server time
-    //is greater than 500 milliseconds then sync client with server
-    if(Math.abs(tools.getTime(currentVideo) - clientTime) > 500) {
+    //is greater than 200 milliseconds then sync client with server
+    if(Math.abs(tools.getTime(currentVideo) - clientTime) > 200) {
       client.emit("sync", {video: currentVideo});
     }
+    console.log(currentVideo.time);
   })
 
   client.on("toggle-pause", () => {
