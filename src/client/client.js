@@ -9,6 +9,7 @@ const progressBar = document.getElementById("progress-bar")
 const audioBtn = document.getElementById("audio")
 const volumeSlider = document.getElementById("volume")
 
+var threshold = 200;
 var currentVideo = {
   link: "",
   time: null,
@@ -82,8 +83,8 @@ function sync(video)
 {
   const videoLink = video.link;
 
-  //offset time by 200 to counter lag
-  const videoTime = video.time + 200;
+  //offset time by threshold to counter lag
+  const videoTime = video.time + threshold;
 
   //if the src is not the same then change src
   if(player.src != videoLink) {
@@ -128,7 +129,7 @@ function update()
   currentVideo.time = player.currentTime * 1000;
 
   //send a sync emit
-  socket.emit("sync", {video: currentVideo});
+  socket.emit("sync", {video: currentVideo, threshold: threshold});
 
   //update after 200 milliseconds
   setTimeout(update, 200);
