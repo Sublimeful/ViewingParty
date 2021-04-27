@@ -36,6 +36,16 @@ input[type="file"] {
   background-color: white;
 }
 
+#threshold {
+  width: 5rem;
+  background-color: #4a4a4a;
+  color: white;
+  margin: 0 5px;
+}
+#threshold::placeholder {
+  color: white;
+}
+
 #control-panel {
   display: flex;
   justify-content: center;
