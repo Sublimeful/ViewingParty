@@ -82,8 +82,8 @@ function sync(video)
 {
   const videoLink = video.link;
 
-  //offset time by 200 to counter lag
-  const videoTime = video.time + 200;
+  //offset time by 100 to counter lag
+  const videoTime = video.time + 100;
 
   //if the src is not the same then change src
   if(player.src != videoLink) {
