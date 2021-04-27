@@ -8,8 +8,8 @@ const player = document.getElementById("video-player")
 const progressBar = document.getElementById("progress-bar")
 const audioBtn = document.getElementById("audio")
 const volumeSlider = document.getElementById("volume")
+const thresholdInput = document.getElementById("sync-threshold")
 
-var threshold = 200;
 var currentVideo = {
   link: "",
   time: null,
@@ -81,6 +81,11 @@ function reloadSubtitles()
 
 function sync(video)
 {
+  //get threshold from input
+  var threshold = parseInt(thresholdInput.value);
+  if(threshold < 0) threshold = 0;
+  if(isNaN(threshold)) threshold = 200;
+
   const videoLink = video.link;
 
   //offset time by threshold to counter lag
