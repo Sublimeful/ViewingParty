@@ -57,6 +57,10 @@ socket.on("sync", data => {
   sync(data.video);
 })
 
+socket.on("debug", data => {
+  console.log("DEBUG: " + data);
+})
+
 function reloadSubtitles()
 {
   //if there is a track element then remove that element

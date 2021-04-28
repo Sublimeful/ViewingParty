@@ -8,7 +8,7 @@ import fs from "fs";
 import * as tools from "./ServerTools.js";
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
 const httpServer = app.listen(port, () => {
   console.log("server is listening on port " + port + "!");
@@ -106,9 +106,12 @@ server.on("connection", (client) => {
       let info = await ytdl.getInfo(data.link);
       let formats = ytdl.filterFormats(info.formats, 'videoandaudio');
       tools.playVideo(currentVideo, formats[formats.length - 1].url);
-    } catch {
+    } catch(err) {
       //if youtube url is invalid or does not exist
       tools.playVideo(currentVideo, data.link);
+
+      //debug the error message
+      server.emit("debug", err.message);
     }
   })
 
