@@ -72,6 +72,9 @@ function reloadSubtitles()
   fetch("/sub.vtt").then(res => {
     if(!res.ok) {
       throw new Error("Not 2xx response");
+      
+      //check after 500 milliseconds
+      setTimeout(reloadSubtitles, 500);
     } else {
       //if there is a new subtitle, then reload the subtitle
       const track = document.createElement("track");
@@ -84,9 +87,6 @@ function reloadSubtitles()
       track.default = true;
       player.appendChild(track);
     }
-  }).catch(() => {
-    //check after 500 milliseconds
-    setTimeout(reloadSubtitles, 500);
   })
 }
 
