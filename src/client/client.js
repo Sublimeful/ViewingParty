@@ -71,8 +71,7 @@ function reloadSubtitles()
   //checks to see if there is a new subtitle, if not, then continue checking
   fetch("/sub.vtt").then(res => {
     if(!res.ok) {
-      //check after 2000 milliseconds
-      setTimeout(reloadSubtitles, 2000);
+      setTimeout(reloadSubtitles, 1000);
       throw new Error("Not 2xx response");
     } else {
       //if there is a new subtitle, then reload the subtitle
@@ -323,8 +322,8 @@ document.addEventListener('DOMContentLoaded', () => {
   //start update loop after 200 milliseconds
   setTimeout(update, 200);
 
-  //reload the subtitles each time a video starts playing
-  player.oncanplay = reloadSubtitles;
+  //reload the subtitles each time a video finishes loading
+  player.addEventListener('loadedmetadata', reloadSubtitles);
 
   //set player default volume to 50%
   player.volume = 0.5;
