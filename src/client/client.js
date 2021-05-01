@@ -72,7 +72,7 @@ function reloadSubtitles()
   fetch("/sub.vtt").then(res => {
     if(!res.ok) {
       //check after 500 milliseconds
-      setTimeout(reloadSubtitles, 500);
+      setTimeout(reloadSubtitles, 2000);
       throw new Error("Not 2xx response");
     } else {
       //if there is a new subtitle, then reload the subtitle
