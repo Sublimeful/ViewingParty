@@ -71,10 +71,10 @@ function reloadSubtitles()
   //checks to see if there is a new subtitle, if not, then continue checking
   fetch("/sub.vtt").then(res => {
     if(!res.ok) {
-      throw new Error("Not 2xx response");
-      
       //check after 500 milliseconds
       setTimeout(reloadSubtitles, 500);
+      
+      throw new Error("Not 2xx response");
     } else {
       //if there is a new subtitle, then reload the subtitle
       const track = document.createElement("track");
