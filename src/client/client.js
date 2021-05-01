@@ -64,8 +64,8 @@ socket.on("debug", data => {
 function reloadSubtitles()
 {
   //if there is a track element then remove that element
-  if(document.getElementById("track")) {
-    document.getElementById("track").remove();
+  while(player.firstChild) {
+    player.removeChild(player.firstChild);
   }
 
   //checks to see if there is a new subtitle, if not, then continue checking
