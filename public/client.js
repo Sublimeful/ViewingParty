@@ -14610,13 +14610,15 @@ socket.on("debug", data => {
 function reloadSubtitles()
 {
   //if there is a track element then remove that element
-  if(document.getElementById("track")) {
-    document.getElementById("track").remove();
+  while(player.firstChild) {
+    player.removeChild(player.firstChild);
   }
 
   //checks to see if there is a new subtitle, if not, then continue checking
   fetch("/sub.vtt").then(res => {
     if(!res.ok) {
+      //check after 2000 milliseconds
+      setTimeout(reloadSubtitles, 2000);
       throw new Error("Not 2xx response");
     } else {
       //if there is a new subtitle, then reload the subtitle
@@ -14630,9 +14632,6 @@ function reloadSubtitles()
       track.default = true;
       player.appendChild(track);
     }
-  }).catch(() => {
-    //check after 500 milliseconds
-    setTimeout(reloadSubtitles, 500);
   })
 }
 

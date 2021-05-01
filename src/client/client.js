@@ -74,7 +74,6 @@ function reloadSubtitles()
       //check after 2000 milliseconds
       setTimeout(reloadSubtitles, 2000);
       throw new Error("Not 2xx response");
-      console.log("DEBUG: Not 2xx response");
     } else {
       //if there is a new subtitle, then reload the subtitle
       const track = document.createElement("track");
