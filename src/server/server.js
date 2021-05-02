@@ -105,8 +105,8 @@ server.on("connection", (client) => {
     //when client sets time
     if(!client.isLeader) return;
 
-    //tools.setTimeVideo will calibrate video.time automatically
-    tools.setTimeVideo(currentVideo, data.time);
+    //tools.setVideoTime will calibrate video.time automatically
+    tools.setVideoTime(currentVideo, data.time);
     
     //then we sync the user up!
     server.emit("sync", {video: currentVideo});
@@ -120,9 +120,6 @@ server.on("connection", (client) => {
     } catch(err) {
       //if youtube url is invalid or does not exist
       tools.playVideo(currentVideo, data.link);
-
-      //debug the error message
-      server.emit("debug", err.message);
     }
   })
 

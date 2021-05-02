@@ -14610,7 +14610,7 @@ socket.on("debug", data => {
 function reloadSubtitles()
 {
   //if there is a track element then remove that element
-  if(document.getElementById("track"))
+  while(document.getElementById("track"))
     document.getElementById("track").remove();
 
   //checks to see if there is a new subtitle, if not, then continue checking
@@ -14675,6 +14675,9 @@ function sync(video)
     else
       player.play();
   }
+
+  //update the subtitles afterwards
+  reloadSubtitles();
 }
 
 function update()
@@ -14878,9 +14881,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //start update loop after 200 milliseconds
   setTimeout(update, 200);
-
-  //reload the subtitles each time a video finishes loading
-  player.addEventListener('loadedmetadata', reloadSubtitles);
 
   //set player default volume to 50%
   player.volume = 0.5;

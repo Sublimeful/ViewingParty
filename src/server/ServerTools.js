@@ -71,12 +71,12 @@ function seekVideo(video, time)
   video.time = Date.now() - video.start;
 }
 
-function setTimeVideo(video, time)
+function setVideoTime(video, time)
 {
   //do some math to set time
   seekVideo(video, time - getTime(video));
 }
 
 
-export {isAnybodyLeader, playVideo, seekVideo, togglePauseVideo, getTime, setTimeVideo};
+export {isAnybodyLeader, playVideo, seekVideo, togglePauseVideo, getTime, setVideoTime};
 
