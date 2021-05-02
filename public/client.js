@@ -14556,6 +14556,7 @@ const audioBtn = document.getElementById("audio")
 const volumeSlider = document.getElementById("volume")
 const thresholdInput = document.getElementById("threshold")
 
+var keys = new Set();
 var threshold = 200;
 var currentVideo = {
   link: "",
@@ -14610,9 +14611,8 @@ socket.on("debug", data => {
 function reloadSubtitles()
 {
   //if there is a track element then remove that element
-  while(player.firstChild) {
-    player.removeChild(player.firstChild);
-  }
+  if(document.getElementById("track"))
+    document.getElementById("track").remove();
 
   //checks to see if there is a new subtitle, if not, then continue checking
   fetch("/sub.vtt").then(res => {
@@ -14718,7 +14718,17 @@ function leaderControlsKeydown(event)
 {
   //if videoInput is focused, then dont react to keys
   const videoInput = document.getElementById("video-input");
-  if(document.activeElement == videoInput) return;
+  if(document.activeElement == videoInput ||
+     keys.has("Control")                  ||
+     keys.has("Shift")) return;
+
+  //if user presses a number
+  if(event.code.includes("Digit")) {
+    const num = parseInt(event.code[event.code.length - 1]);
+    const time = num / 10 * player.duration * 1000;
+    if(!isNaN(time))
+      socket.emit("set-time", {time: time});
+  }
 
   //compare keycode and act on key that is pressed
   switch(event.code)
@@ -14865,6 +14875,8 @@ function removeLeaderControls()
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  'use strict';
+
   //start update loop after 200 milliseconds
   setTimeout(update, 200);
 
@@ -14873,6 +14885,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //set player default volume to 50%
   player.volume = 0.5;
+
+  //add keydown and keyup event
+  document.addEventListener("keydown", e => keys.add(e.key));
+  document.addEventListener("keyup", e => keys.delete(e.key));
 });
 
 

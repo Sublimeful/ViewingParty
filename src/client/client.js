@@ -65,7 +65,8 @@ socket.on("debug", data => {
 function reloadSubtitles()
 {
   //if there is a track element then remove that element
-  document.getElementById("track").remove();
+  if(document.getElementById("track"))
+    document.getElementById("track").remove();
 
   //checks to see if there is a new subtitle, if not, then continue checking
   fetch("/sub.vtt").then(res => {
@@ -173,13 +174,14 @@ function leaderControlsKeydown(event)
   const videoInput = document.getElementById("video-input");
   if(document.activeElement == videoInput ||
      keys.has("Control")                  ||
-     keys.has("Alt")                      ||
      keys.has("Shift")) return;
 
   //if user presses a number
-  if(event.code.contains("Digit")) {
+  if(event.code.includes("Digit")) {
     const num = parseInt(event.code[event.code.length - 1]);
-    socket.emit("set-video", {time: num / 10 * player.duration * 1000});
+    const time = num / 10 * player.duration * 1000;
+    if(!isNaN(time))
+      socket.emit("set-time", {time: time});
   }
 
   //compare keycode and act on key that is pressed
@@ -327,6 +329,8 @@ function removeLeaderControls()
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  'use strict';
+
   //start update loop after 200 milliseconds
   setTimeout(update, 200);
 
