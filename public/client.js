@@ -14718,7 +14718,7 @@ function leaderControlsKeydown(event)
   //if videoInput is focused, then dont react to keys
   const videoInput = document.getElementById("video-input");
   if(document.activeElement == videoInput ||
-     (event.getModifierState("Alt") + event.getModifierState("Ctrl") + event.getModifierState("Shift") > 0)) return;
+     event.ctrlKey) return;
 
   //if user presses a number
   if(event.code.includes("Digit")) {
@@ -14860,13 +14860,13 @@ function addLeaderControls()
   controlPanel.appendChild(leaderControls);
 
   //add keybinds
-  document.addEventListener("keydown", leaderControlsKeydown);
+  window.addEventListener("keydown", leaderControlsKeydown);
 }
 
 function removeLeaderControls()
 {
   //remove keybinds
-  document.removeEventListener("keydown", leaderControlsKeydown);
+  window.removeEventListener("keydown", leaderControlsKeydown);
 
   //remove leader control panel
   document.getElementById("leader-controls").remove();
