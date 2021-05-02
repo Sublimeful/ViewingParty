@@ -10,7 +10,6 @@ const audioBtn = document.getElementById("audio")
 const volumeSlider = document.getElementById("volume")
 const thresholdInput = document.getElementById("threshold")
 
-var keys = new Set();
 var threshold = 200;
 var currentVideo = {
   link: "",
@@ -173,8 +172,7 @@ function leaderControlsKeydown(event)
   //if videoInput is focused, then dont react to keys
   const videoInput = document.getElementById("video-input");
   if(document.activeElement == videoInput ||
-     keys.has("Control")                  ||
-     keys.has("Shift")) return;
+    (event.getModifierState("Alt") + event.getModifierState("Ctrl") + event.getModifierState("Shift") > 0)) return;
 
   //if user presses a number
   if(event.code.includes("Digit")) {
@@ -339,9 +337,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //set player default volume to 50%
   player.volume = 0.5;
-
-  //add keydown and keyup event
-  document.addEventListener("keydown", e => keys.add(e.key));
-  document.addEventListener("keyup", e => keys.delete(e.key));
 });
 
