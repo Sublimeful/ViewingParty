@@ -14603,18 +14603,17 @@ socket.on("sync", data => {
   sync(data.video);
 })
 
+socket.on("reload-subtitle", reloadSubtitle);
+
 socket.on("debug", data => {
   console.log("DEBUG: " + data);
 })
 
-function reloadSubtitles()
+function reloadSubtitle()
 {
-  //reloads the subtitles every 1000 milliseconds(1 second)
-  setTimeout(reloadSubtitles, 1000);
-
   fetch("/sub.vtt").then(res => {
     if(res.ok) {
-      //if there is subtitles, then reload the subtitle
+      //if there is subtitle, then reload the subtitle
 
       //remove all track elements
       while(document.getElementById("track"))
@@ -14823,9 +14822,9 @@ function addLeaderControls()
   subtitle.onchange = () => {
     if(subtitle.files[0]) {
       //if there is subtitle, then use it
-      const file = subtitle.files[0];
 
       //create the streams
+      const file = subtitle.files[0];
       const stream = ss.createStream();
       const blobstream = ss.createBlobReadStream(file);
 
@@ -14877,8 +14876,8 @@ document.addEventListener('DOMContentLoaded', () => {
   //start update loop after 200 milliseconds
   setTimeout(update, 200);
 
-  //start subtitle checking loop after 1000 milliseconds
-  setTimeout(reloadSubtitles, 1000);
+  //reloads the subtitle when the player has changed videos
+  player.addEventListener("loadedmetadata", reloadSubtitle);
 
   //set player default volume to 50%
   player.volume = 0.5;

@@ -40,6 +40,11 @@ server.on("connection", client => {
 
     //write the subtitle data to subtitlePath
     stream.pipe(fs.createWriteStream(subtitlePath));
+    
+    //when piping finishes reload subtitle for every client
+    stream.on('finish', () => {
+      server.emit("reload-subtitle");
+    })
   })
 
   client.on("toggle-leader", () => {
