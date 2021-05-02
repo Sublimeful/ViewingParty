@@ -16,7 +16,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "npm run concurrently",
+    "start": "node src/server/server.js",
+    "dev": "npm run concurrently",
     "concurrently": "concurrently --kill-others \"npm run nodemon\" \"npm run watchify\"",
     "nodemon": "nodemon src/server/server.js",
     "watchify": "watchify src/client/client.js -o public/client.js -v"
