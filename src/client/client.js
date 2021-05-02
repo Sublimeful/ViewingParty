@@ -176,6 +176,12 @@ function leaderControlsKeydown(event)
      keys.has("Alt")                      ||
      keys.has("Shift")) return;
 
+  //if user presses a number
+  if(event.code.contains("Digit")) {
+    const num = parseInt(event.code[event.code.length - 1]);
+    socket.emit("set-video", {time: num / 10 * player.duration * 1000});
+  }
+
   //compare keycode and act on key that is pressed
   switch(event.code)
   {

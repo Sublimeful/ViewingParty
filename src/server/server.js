@@ -101,6 +101,17 @@ server.on("connection", (client) => {
     server.emit("sync", {video: currentVideo});
   })
 
+  client.on("set-time", data => {
+    //when client sets time
+    if(!client.isLeader) return;
+
+    //tools.setTimeVideo will calibrate video.time automatically
+    tools.setTimeVideo(currentVideo, data.time);
+    
+    //then we sync the user up!
+    server.emit("sync", {video: currentVideo});
+  })
+
   client.on("play-video", async data => {
     try {
       let info = await ytdl.getInfo(data.link);
