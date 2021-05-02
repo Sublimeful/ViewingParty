@@ -14818,11 +14818,8 @@ function addLeaderControls()
     socket.emit("seek", {time: 5000});
   })
 
-  //if a file is uploaded to subtitle, then activate subtitle label
-  subtitle.onchange = () => {
+  subtitle.addEventListener("change", () => {
     if(subtitle.files[0]) {
-      //if there is subtitle, then use it
-
       //create the streams
       const file = subtitle.files[0];
       const stream = ss.createStream();
@@ -14836,17 +14833,12 @@ function addLeaderControls()
     } else {
       subtitleLabel.classList.remove("activated");
     }
-  }
+  })
 
-  //video input event
   videoInput.addEventListener("keydown", event => {
-    if (event.code == "Enter") {
-      event.preventDefault();
-      if (videoInput.value.trim() != "") {
-        //play the video
-        socket.emit("play-video", { link: videoInput.value });
-      }
-    }
+    //if enter key is pressed and videoInput is not blank then play the link
+    if(event.code == "Enter" && videoInput.value.trim() != "")
+      socket.emit("play-video", { link: videoInput.value });
   })
 
   leaderControls.appendChild(pause);
