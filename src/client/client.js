@@ -277,9 +277,9 @@ function addLeaderControls()
   subtitle.onchange = () => {
     if(subtitle.files[0]) {
       //if there is subtitle, then use it
-      const file = subtitle.files[0];
 
       //create the streams
+      const file = subtitle.files[0];
       const stream = ss.createStream();
       const blobstream = ss.createBlobReadStream(file);
 
