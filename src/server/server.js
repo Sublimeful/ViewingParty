@@ -27,7 +27,7 @@ var currentVideo = {
 
 
 
-server.on("connection", (client) => {
+server.on("connection", client => {
   //add client to list
   clientList.push(client);
 
@@ -37,12 +37,6 @@ server.on("connection", (client) => {
 
   ss(client).on('subtitle', stream => {
     //when client uploads subtitle
-
-    //if sub.vtt exists
-    if (fs.existsSync(subtitlePath)) {
-      //remove the sub.vtt file
-      fs.unlinkSync(subtitlePath);
-    }
 
     //write the subtitle data to public/sub.vtt
     stream.pipe(fs.createWriteStream(subtitlePath));
