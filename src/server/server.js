@@ -38,7 +38,7 @@ server.on("connection", client => {
   ss(client).on('subtitle', stream => {
     //when client uploads subtitle
 
-    //write the subtitle data to public/sub.vtt
+    //write the subtitle data to subtitlePath
     stream.pipe(fs.createWriteStream(subtitlePath));
   })
 
