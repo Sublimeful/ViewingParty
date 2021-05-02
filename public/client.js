@@ -14715,10 +14715,11 @@ function togglePause()
 
 function leaderControlsKeydown(event)
 {
-  //if videoInput is focused, then dont react to keys
+  //if videoInput is focused or ctrl is down, then dont react to keys
   const videoInput = document.getElementById("video-input");
   if(document.activeElement == videoInput ||
-     event.ctrlKey) return;
+     event.ctrlKey                        ||
+     event.altKey) return;
 
   //if user presses a number
   if(event.code.includes("Digit")) {
