@@ -172,7 +172,9 @@ function leaderControlsKeydown(event)
   //if videoInput is focused, then dont react to keys
   const videoInput = document.getElementById("video-input");
   if(document.activeElement == videoInput ||
-     keys.has("Control")) return;
+     keys.has("Control")                  ||
+     keys.has("Alt")                      ||
+     keys.has("Shift")) return;
 
   //compare keycode and act on key that is pressed
   switch(event.code)
