@@ -63,17 +63,18 @@ socket.on("debug", data => {
 
 function reloadSubtitles()
 {
-  //if there is a track element then remove that element
-  while(document.getElementById("track"))
-    document.getElementById("track").remove();
+  //reloads the subtitles every 1000 milliseconds(1 second)
+  setTimeout(reloadSubtitles, 1000);
 
-  //checks to see if there is a new subtitle, if not, then continue checking
   fetch("/sub.vtt").then(res => {
-    if(!res.ok) {
-      setTimeout(reloadSubtitles, 1000);
-      throw new Error("Not 2xx response");
-    } else {
-      //if there is a new subtitle, then reload the subtitle
+    if(res.ok) {
+      //if there is subtitles, then reload the subtitle
+
+      //remove all track elements
+      while(document.getElementById("track"))
+        document.getElementById("track").remove();
+
+      //create new track element and append it to player
       const track = document.createElement("track");
       track.kind = "captions";
       track.label = "English";
@@ -129,9 +130,6 @@ function sync(video)
     else
       player.play();
   }
-
-  //update the subtitles afterwards
-  reloadSubtitles();
 }
 
 function update()
@@ -332,6 +330,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //start update loop after 200 milliseconds
   setTimeout(update, 200);
+
+  //start subtitle checking loop after 1000 milliseconds
+  setTimeout(reloadSubtitles, 1000);
 
   //set player default volume to 50%
   player.volume = 0.5;
