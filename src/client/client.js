@@ -129,6 +129,9 @@ function sync(video)
     else
       player.play();
   }
+
+  //update the subtitles afterwards
+  reloadSubtitles();
 }
 
 function update()
@@ -332,9 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //start update loop after 200 milliseconds
   setTimeout(update, 200);
-
-  //reload the subtitles each time a video finishes loading
-  player.addEventListener('loadedmetadata', reloadSubtitles);
 
   //set player default volume to 50%
   player.volume = 0.5;
