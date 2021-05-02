@@ -278,6 +278,17 @@ function addLeaderControls()
   //if a file is uploaded to subtitle, then activate subtitle label
   subtitle.onchange = () => {
     if(subtitle.files[0]) {
+      //if there is subtitle, then use it
+      const file = subtitle.files[0];
+
+      //create the streams
+      const stream = ss.createStream();
+      const blobstream = ss.createBlobReadStream(file);
+
+      //pipe the blobstream to stream
+      ss(socket).emit('subtitle', stream)
+      blobstream.pipe(stream);
+
       subtitleLabel.classList.add("activated");
     } else {
       subtitleLabel.classList.remove("activated");
@@ -291,20 +302,6 @@ function addLeaderControls()
       if (videoInput.value.trim() != "") {
         //play the video
         socket.emit("play-video", { link: videoInput.value });
-
-        //if there is subtitle, then use it
-        if(subtitle.files[0])
-        {
-          const file = subtitle.files[0];
-
-          //create the streams
-          const stream = ss.createStream();
-          const blobstream = ss.createBlobReadStream(file);
-
-          //pipe the blobstream to stream
-          ss(socket).emit('subtitle', stream)
-          blobstream.pipe(stream);
-        }
       }
     }
   })
