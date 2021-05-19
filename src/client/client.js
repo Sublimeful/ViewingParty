@@ -112,8 +112,8 @@ function sync(video)
 
   //if the src is not the same then change src
   if(player.src != videoLink) {
-    currentVideo.link = videoLink;
     player.src = videoLink;
+    currentVideo.link = videoLink;
   }
 
   //set the currentVideo pause state
