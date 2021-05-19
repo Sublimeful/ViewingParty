@@ -14768,6 +14768,7 @@ function addLeaderControls()
 
   //make the subtitle button look prettier
   subtitleLabel.style.color = "white";
+  subtitleLabel.style.minWidth = "102.5px";
   subtitleLabel.htmlFor = "subtitle";
   subtitleLabel.classList.add("file-upload");
   subtitleLabel.appendChild(subtitleLabelIcon);
