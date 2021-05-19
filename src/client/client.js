@@ -182,7 +182,7 @@ function leaderControlsKeydown(event)
 
   if(document.activeElement == videoInput     ||
      document.activeElement == thresholdInput ||
-     event.ctrlKey                            || 
+     event.ctrlKey                            ||
      event.altKey)
     return;
 
