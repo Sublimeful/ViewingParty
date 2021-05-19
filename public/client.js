@@ -14655,7 +14655,8 @@ function sync(video)
 function update()
 {
   //set the currentVideo time(convert to milliseconds)
-  currentVideo.time = player.currentTime * 1000;
+  //offset by threshold artifically to reduce lag
+  currentVideo.time = (player.currentTime + threshold) * 1000;
 
   //send a sync emit
   client.emit("sync", {video: currentVideo, threshold: threshold});
