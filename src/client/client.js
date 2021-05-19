@@ -40,17 +40,23 @@ audioBtn.addEventListener("click", () => {
 })
 
 player.addEventListener("dblclick", function() {
-  if(this.requestFullscreen) {
-    this.requestFullscreen();
-  } 
-  else if(this.mozRequestFullScreen) { 
-    this.mozRequestFullScreen();
-  } 
-  else if(this.webkitRequestFullscreen) { 
-    this.webkitRequestFullscreen();
-  } 
-  else if(this.msRequestFullscreen) { 
-    this.msRequestFullscreen();
+  //toggle fullscreen if possible
+  if(!document.fullscreenElement) {
+    if(this.requestFullscreen) {
+      this.requestFullscreen();
+    } else if(this.webkitRequestFullscreen) { /* Safari */
+      this.webkitRequestFullscreen();
+    } else if(this.msRequestFullscreen) { /* IE11 */
+      this.msRequestFullscreen();
+    }
+  } else {
+    if(document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if(document.webkitExitFullscreen) { /* Safari */
+      document.webkitExitFullscreen();
+    } else if(document.msExitFullscreen) { /* IE11 */
+      document.msExitFullscreen();
+    }
   }
 })
 

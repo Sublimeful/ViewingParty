@@ -14556,6 +14556,27 @@ audioBtn.addEventListener("click", () => {
     audioBtn.classList.remove("activated");
 })
 
+player.addEventListener("dblclick", function() {
+  //toggle fullscreen if possible
+  if(!document.fullscreenElement) {
+    if(this.requestFullscreen) {
+      this.requestFullscreen();
+    } else if(this.webkitRequestFullscreen) { /* Safari */
+      this.webkitRequestFullscreen();
+    } else if(this.msRequestFullscreen) { /* IE11 */
+      this.msRequestFullscreen();
+    }
+  } else {
+    if(document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if(document.webkitExitFullscreen) { /* Safari */
+      document.webkitExitFullscreen();
+    } else if(document.msExitFullscreen) { /* IE11 */
+      document.msExitFullscreen();
+    }
+  }
+})
+
 thresholdInput.addEventListener("change", () => {
   //get threshold from input
   threshold = parseInt(thresholdInput.value);
