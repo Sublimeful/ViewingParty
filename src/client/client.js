@@ -10,7 +10,7 @@ const audioBtn =       document.getElementById("audio");
 const volumeSlider =   document.getElementById("volume");
 const thresholdInput = document.getElementById("threshold");
 
-var threshold = 200;
+var threshold = 400;
 var currentVideo = {
   link: "",
   time: null,
@@ -41,9 +41,9 @@ thresholdInput.addEventListener("change", () => {
   //get threshold from input
   threshold = parseInt(thresholdInput.value);
 
-  //if input value is not a number or if threshold is negative, then default to 200
+  //if input value is not a number or if threshold is negative, then default to 400
   if(isNaN(threshold) || threshold < 0)
-    threshold = 200;
+    threshold = 400;
 })
 
 leaderBtn.addEventListener("click", () => {
