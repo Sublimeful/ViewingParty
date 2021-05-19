@@ -9,6 +9,15 @@ body {
   overflow-y: auto;
 }
 
+input[type="text"] {
+  background-color: #4a4a4a;
+  color: white;
+  margin: 0 5px;
+}
+input[type="text"]::placeholder {
+  color: white;
+}
+
 input[type="file"] {
   display: none;
 }
@@ -34,16 +43,6 @@ input[type="file"] {
 #progress-bar div {
   height: 100%;
   background-color: white;
-}
-
-#threshold {
-  width: 5rem;
-  background-color: #4a4a4a;
-  color: white;
-  margin: 0 5px;
-}
-#threshold::placeholder {
-  color: white;
 }
 
 #control-panel {

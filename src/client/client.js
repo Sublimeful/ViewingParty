@@ -262,6 +262,9 @@ function addLeaderControls()
   subtitle.type = "file";
   subtitle.accept = ".vtt";
 
+  //videoInput styling
+  videoInput.placeholder = "Links go here...";
+
   //pause click event
   pause.addEventListener("click", togglePause);
 
