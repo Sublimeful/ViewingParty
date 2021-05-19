@@ -14611,9 +14611,7 @@ function reloadSubtitle()
 function sync(video)
 {
   const videoLink = video.link;
-
-  //offset time by threshold to counter lag
-  const videoTime = video.time + threshold;
+  const videoTime = video.time;
 
   //if the src is not the same then change src
   if(player.src != videoLink) {
