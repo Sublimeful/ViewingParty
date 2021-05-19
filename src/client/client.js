@@ -140,7 +140,7 @@ function sync(video)
 
 function update()
 {
-  //set the currentVideo time offset by threshold to reduce lag
+  //set the currentVideo time, offset by threshold to reduce lag
   currentVideo.time = (player.currentTime + threshold) * 1000;
 
   //send a sync emit
