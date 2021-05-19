@@ -14708,8 +14708,7 @@ function leaderControlsKeydown(event)
   }
 
   //compare keycode and act on key that is pressed
-  switch(event.code)
-  {
+  switch(event.code) {
     case "Space":
       client.emit("toggle-pause");
       break;
