@@ -3,6 +3,11 @@
   overflow-y: auto;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 input[type="text"] {
   background-color: #4a4a4a;
   color: white;
