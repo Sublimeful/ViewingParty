@@ -14,7 +14,7 @@ var threshold = 200;
 var currentVideo = {
   link: "",
   time: null,
-  paused: true
+  paused: false
 }
 
 
