@@ -73,8 +73,8 @@ function reloadSubtitle()
   fetch("/sub.vtt").then(res => {
     //if there is subtitle, then reload the subtitle
     if(res.ok) {
-      //remove the current track element
-      document.getElementById("track").remove();
+      //remove all track elements with track id
+      document.querySelectorAll("#track").forEach(t => {t.remove()});
 
       //create new track element and append it to player
       const track = document.createElement("track");
