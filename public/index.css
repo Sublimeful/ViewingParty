@@ -43,6 +43,7 @@ input[type="file"] {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: max-content;
   height: calc(5% + 40px);
 }
 #control-panel button {
