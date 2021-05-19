@@ -152,11 +152,15 @@ function update()
   if(!player.duration)
     return;
 
-  //update progress bar
+  //update progress bar, change bar color based on whether video is playing
   const bar = progressBar.children[0];
   const progress = player.currentTime / player.duration;
 
   bar.style.width = progress * 100 + "%";
+  if(!player.paused)
+    bar.style.backgroundColor = "#42f542";
+  else
+    bar.style.backgroundColor = "white";
 }
 
 function togglePause()
