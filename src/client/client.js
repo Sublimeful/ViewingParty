@@ -316,7 +316,7 @@ function addLeaderControls()
 
   videoInput.addEventListener("keydown", event => {
     //if enter key is pressed and videoInput is not blank then play the link
-    if(event.code == "Enter" && videoInput.value.trim() != "")
+    if(event.code == "Enter" && videoInput.value.trim())
       client.emit("play-video", {link: videoInput.value});
   })
 
