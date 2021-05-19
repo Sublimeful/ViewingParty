@@ -279,7 +279,7 @@ function addLeaderControls()
   videoInput.classList.add("input");
   videoInput.type = "text";
   videoInput.style.minWidth = "5rem";
-  videoInput.placeholder = "Links go here...";
+  videoInput.placeholder = "Video links go here...";
 
   //pause click event
   pause.addEventListener("click", togglePause);
