@@ -120,6 +120,7 @@ server.on("connection", client => {
   })
 
   client.on("play-video", async data => {
+    //plays a new video based on the link given!
     try {
       let info = await ytdl.getInfo(data.link);
       let formats = ytdl.filterFormats(info.formats, 'videoandaudio');
@@ -129,6 +130,9 @@ server.on("connection", client => {
       //if youtube url is invalid or does not exist
       tools.playVideo(currentVideo, data.link);
     }
+
+    //then we sync the user up!
+    server.emit("sync", {video: currentVideo});
   })
 
   client.on("disconnect", () => {
