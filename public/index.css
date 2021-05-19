@@ -28,7 +28,7 @@ input[type="file"] {
 }
 
 #video-container {
-  width: 100%;
+  max-width: 100%;
   height: calc(95% - 52px);
 }
 #video-container video {
@@ -37,7 +37,7 @@ input[type="file"] {
 }
 
 #progress-bar {
-  width: 100%;
+  max-width: 100%;
   height: 10px;
 }
 #progress-bar div {
