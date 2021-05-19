@@ -120,7 +120,7 @@ function sync(video)
   player.currentTime = videoTime / 1000;
 
   //if videoTime is greater than or equal to the player duration then return
-  if(videoTime / 1000 >= player.duration) return;
+  if(videoTime >= player.duration * 1000) return;
 
   //pause the video accordingly
   if(paused != player.paused) {
@@ -194,22 +194,22 @@ function leaderControlsKeydown(event)
       togglePause();
       break;
     case "KeyH":
-      socket.emit("seek", {time: -60000});
+      socket.emit("seek", {time: -60000, duration: player.duration * 1000});
       break;
     case "KeyJ":
-      socket.emit("seek", {time: -10000});
+      socket.emit("seek", {time: -10000, duration: player.duration * 1000});
       break;
     case "KeyK":
-      socket.emit("seek", {time: 10000});
+      socket.emit("seek", {time: 10000, duration: player.duration * 1000});
       break;
     case "KeyL":
-      socket.emit("seek", {time: 60000});
+      socket.emit("seek", {time: 60000, duration: player.duration * 1000});
       break;
     case "ArrowLeft":
-      socket.emit("seek", {time: -5000});
+      socket.emit("seek", {time: -5000, duration: player.duration * 1000});
       break;
     case "ArrowRight":
-      socket.emit("seek", {time: 5000});
+      socket.emit("seek", {time: 5000, duration: player.duration * 1000});
       break;
     default:
       //return if nothing matches
@@ -267,10 +267,10 @@ function addLeaderControls()
 
   //seeking the video
   seekBTiny.addEventListener("click", () => {
-    socket.emit("seek", {time: -5000});
+    socket.emit("seek", {time: -5000, duration: player.duration * 1000});
   })
   seekFTiny.addEventListener("click", () => {
-    socket.emit("seek", {time: 5000});
+    socket.emit("seek", {time: 5000, duration: player.duration * 1000});
   })
 
   subtitle.addEventListener("change", () => {

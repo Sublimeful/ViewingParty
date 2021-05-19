@@ -93,8 +93,13 @@ server.on("connection", client => {
     //when client seeks
     if(!client.isLeader) return;
 
-    //tools.seekVideo will calibrate video.time automatically
-    tools.seekVideo(currentVideo, data.time);
+    if(!isNaN(data.duration) && data.duration >= tools.getTime(currentVideo)) {
+      //if the currentVideo time is greater than the duration of the video
+      tools.setVideoTime(currentVideo, data.duration + data.time);
+    } else {
+      //tools.seekVideo will calibrate video.time automatically
+      tools.seekVideo(currentVideo, data.time);
+    }
 
     //then we sync the user up!
     server.emit("sync", {video: currentVideo});
