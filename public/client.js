@@ -14565,10 +14565,7 @@ thresholdInput.addEventListener("change", () => {
     threshold = 400;
 })
 
-leaderBtn.addEventListener("click", () => {
-  //on click of the leaderBtn, toggle leader
-  client.emit("toggle-leader");
-});
+leaderBtn.addEventListener("click", () => {client.emit("toggle-leader")});
 
 client.on("leader", () => {
   //when client becomes leader, activate leaderBtn and addLeaderControls
