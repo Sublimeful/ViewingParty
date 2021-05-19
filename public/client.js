@@ -14686,8 +14686,8 @@ function update()
   //set the currentVideo time
   currentVideo.time = player.currentTime * 1000;
 
-  //send a sync emit
-  client.emit("sync", {video: currentVideo, threshold: threshold});
+  //send a sync emit, artificially increase time by threshold / 2 to reduce lag
+  client.emit("sync", {video: {...currentVideo, time: currentVideo.time + threshold / 2}, threshold: threshold});
 
   //update after 200 milliseconds
   setTimeout(update, 200);
