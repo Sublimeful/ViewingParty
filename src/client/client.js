@@ -1,6 +1,6 @@
 const io = require("socket.io-client");
 const ss = require('socket.io-stream');
-const socket = io();
+const client = io();
 
 const leaderBtn =      document.getElementById("leader-btn");
 const controlPanel =   document.getElementById("control-panel");
@@ -46,24 +46,24 @@ thresholdInput.addEventListener("change", () => {
 })
 
 leaderBtn.addEventListener("click", () => {
-  socket.emit("toggle-leader");
+  client.emit("toggle-leader");
 });
 
-socket.on("leader", () => {
+client.on("leader", () => {
   leaderBtn.classList.add("activated");
   addLeaderControls();
 })
 
-socket.on("unleader", () => {
+client.on("unleader", () => {
   leaderBtn.classList.remove("activated");
   removeLeaderControls();
 })
 
-socket.on("sync", data => {
+client.on("sync", data => {
   sync(data.video);
 })
 
-socket.on("reload-subtitle", reloadSubtitle);
+client.on("reload-subtitle", reloadSubtitle);
 
 
 
@@ -143,7 +143,7 @@ function update()
   currentVideo.time = player.currentTime * 1000;
 
   //send a sync emit
-  socket.emit("sync", {video: currentVideo, threshold: threshold});
+  client.emit("sync", {video: currentVideo, threshold: threshold});
 
   //update after 200 milliseconds
   setTimeout(update, 200);
@@ -162,7 +162,7 @@ function update()
 function togglePause()
 {
   //toggle pause button activation
-  socket.emit("toggle-pause");
+  client.emit("toggle-pause");
 
   const pause = document.getElementById("pause");
 
@@ -193,7 +193,7 @@ function leaderControlsKeydown(event)
 
     //set video time if time is a number
     if(!isNaN(time))
-      socket.emit("set-time", {time: time});
+      client.emit("set-time", {time: time});
   }
 
   //compare keycode and act on key that is pressed
@@ -206,22 +206,22 @@ function leaderControlsKeydown(event)
       togglePause();
       break;
     case "KeyH":
-      socket.emit("seek", {time: -60000, duration: player.duration * 1000});
+      client.emit("seek", {time: -60000, duration: player.duration * 1000});
       break;
     case "KeyJ":
-      socket.emit("seek", {time: -10000, duration: player.duration * 1000});
+      client.emit("seek", {time: -10000, duration: player.duration * 1000});
       break;
     case "KeyK":
-      socket.emit("seek", {time: 10000,  duration: player.duration * 1000});
+      client.emit("seek", {time: 10000,  duration: player.duration * 1000});
       break;
     case "KeyL":
-      socket.emit("seek", {time: 60000,  duration: player.duration * 1000});
+      client.emit("seek", {time: 60000,  duration: player.duration * 1000});
       break;
     case "ArrowLeft":
-      socket.emit("seek", {time: -5000,  duration: player.duration * 1000});
+      client.emit("seek", {time: -5000,  duration: player.duration * 1000});
       break;
     case "ArrowRight":
-      socket.emit("seek", {time: 5000,   duration: player.duration * 1000});
+      client.emit("seek", {time: 5000,   duration: player.duration * 1000});
       break;
     default:
       //return if nothing matches
@@ -286,10 +286,10 @@ function addLeaderControls()
 
   //seeking the video
   seekBTiny.addEventListener("click", () => {
-    socket.emit("seek", {time: -5000, duration: player.duration * 1000});
+    client.emit("seek", {time: -5000, duration: player.duration * 1000});
   })
   seekFTiny.addEventListener("click", () => {
-    socket.emit("seek", {time: 5000,  duration: player.duration * 1000});
+    client.emit("seek", {time: 5000,  duration: player.duration * 1000});
   })
 
   subtitle.addEventListener("change", () => {
@@ -300,7 +300,7 @@ function addLeaderControls()
       const blobstream = ss.createBlobReadStream(file);
 
       //pipe the blobstream to stream
-      ss(socket).emit('subtitle', stream)
+      ss(client).emit('subtitle', stream)
       blobstream.pipe(stream);
 
       subtitleLabel.classList.add("activated");
@@ -312,7 +312,7 @@ function addLeaderControls()
   videoInput.addEventListener("keydown", event => {
     //if enter key is pressed and videoInput is not blank then play the link
     if(event.code == "Enter" && videoInput.value.trim() != "")
-      socket.emit("play-video", { link: videoInput.value });
+      client.emit("play-video", { link: videoInput.value });
   })
 
   leaderControls.appendChild(pause);
