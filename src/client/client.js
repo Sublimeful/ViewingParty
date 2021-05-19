@@ -100,6 +100,9 @@ function sync(video)
   if(player.src != videoLink) {
     currentVideo.link = videoLink;
     player.src = videoLink;
+
+    //reset the currentVideo time, offset by threshold to reduce lag
+    currentVideo.time = threshold;
   }
 
   //get whether server video is paused
@@ -137,8 +140,7 @@ function sync(video)
 
 function update()
 {
-  //set the currentVideo time(convert to milliseconds)
-  //offset by threshold artifically to reduce lag
+  //set the currentVideo time offset by threshold to reduce lag
   currentVideo.time = (player.currentTime + threshold) * 1000;
 
   //send a sync emit
