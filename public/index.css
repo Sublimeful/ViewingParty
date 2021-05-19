@@ -1,17 +1,16 @@
 :root {
   background-color: black;
-  overflow-y: auto;
+  overflow-y:       auto;
 }
 
-html,
-body {
+html, body {
   height: 100%;
 }
 
 input[type="text"] {
   background-color: #4a4a4a;
-  color: white;
-  margin: 0 5px;
+  color:            white;
+  margin:           0 5px;
 }
 input[type="text"]::placeholder {
   color: white;
@@ -21,20 +20,19 @@ input[type="file"] {
   display: none;
 }
 .file-upload {
-  border: 1px solid #ccc;
+  border:  1px solid #ccc;
   display: inline-block;
   padding: 6px 12px;
-  cursor: pointer;
+  cursor:  pointer;
 }
 
 #video-container {
-  width: 100%;
+  width:  100%;
   height: calc(95% - 52px);
 }
-
 #video-player {
-  width: 100%;
-  height: 100%;
+  width:   100%;
+  height:  100%;
   outline: none;
 }
 #video-player::-webkit-media-controls {
@@ -42,32 +40,33 @@ input[type="file"] {
 }
 
 #progress-bar {
-  width: 100%;
+  width:  100%;
   height: 10px;
 }
 #progress-bar div {
-  height: 100%;
+  height:           100%;
   background-color: white;
 }
 
 #control-panel {
-  display: flex;
+  display:         flex;
   justify-content: center;
-  align-items: center;
-  min-width: min-content;
-  height: calc(5% + 40px);
+  align-items:     center;
+  min-width:       min-content;
+  height:          calc(5% + 40px);
 }
 #control-panel button {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: red;
-  border-color: red;
-  box-shadow: 0 0 15px red;
-  margin: 0 5px;
+  width:            40px;
+  height:           40px;
+  border-radius:    50%;
+  background-color:          red;
+  border-color:              red;
+  box-shadow:       0 0 15px red;
+  margin:           0 5px;
 }
 .activated {
-  background-color: green !important;
-  border-color: green !important;
+  background-color:    green !important;
+  border-color:        green !important;
   box-shadow: 0 0 15px green !important;
 }
+
