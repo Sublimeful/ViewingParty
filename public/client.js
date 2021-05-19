@@ -14558,8 +14558,8 @@ thresholdInput.addEventListener("change", () => {
   //get threshold from input
   threshold = parseInt(thresholdInput.value);
 
-  //if input value is not a number, then default to 200
-  if(isNaN(threshold))
+  //if input value is not a number or if threshold is negative, then default to 200
+  if(isNaN(threshold) || threshold < 0)
     threshold = 200;
 })
 
@@ -14636,8 +14636,8 @@ function sync(video)
   //set the currentVideo pause state
   currentVideo.paused = paused;
 
-  //set the currentVideo time, offset by threshold to reduce lag
-  currentVideo.time = videoTime + threshold;
+  //set the currentVideo time
+  currentVideo.time = videoTime;
 
   //convert milliseconds to seconds and set the player's time
   player.currentTime = videoTime / 1000;
@@ -14669,8 +14669,8 @@ function sync(video)
 
 function update()
 {
-  //set the currentVideo time, offset by threshold to reduce lag
-  currentVideo.time = (player.currentTime * 1000) + threshold;
+  //set the currentVideo time
+  currentVideo.time = player.currentTime * 1000;
 
   //send a sync emit
   client.emit("sync", {video: currentVideo, threshold: threshold});
@@ -14746,8 +14746,8 @@ function leaderControlsKeydown(event)
       return;
   }
 
-  //if key matches with one of the switch cases, then
-  //prevent default things from happening and only focus on the inputs
+  //if key matches with one of the switch cases, then prevent
+  //default things from happening and only focus on the inputs
   event.preventDefault();
 }
 
