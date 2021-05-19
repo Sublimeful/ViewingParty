@@ -14780,6 +14780,8 @@ function addLeaderControls()
   subtitle.accept = ".vtt";
 
   //videoInput styling
+  videoInput.classList.add("input");
+  videoInput.type = "text";
   videoInput.placeholder = "Links go here...";
 
   //pause click event
