@@ -80,7 +80,8 @@ server.on("connection", client => {
 
   client.on("toggle-pause", () => {
     //when client toggles pause
-    if(!client.isLeader) return;
+    if(!client.isLeader)
+      return;
 
     //tools.togglePauseVideo will calibrate video.time automatically
     tools.togglePauseVideo(currentVideo);
@@ -91,7 +92,8 @@ server.on("connection", client => {
 
   client.on("seek", data => {
     //when client seeks
-    if(!client.isLeader) return;
+    if(!client.isLeader)
+      return;
 
     if(!isNaN(data.duration) && tools.getTime(currentVideo) >= data.duration) {
       //if the currentVideo time is greater than or equal to the duration of the video
@@ -107,7 +109,8 @@ server.on("connection", client => {
 
   client.on("set-time", data => {
     //when client sets time
-    if(!client.isLeader) return;
+    if(!client.isLeader)
+      return;
 
     //tools.setVideoTime will calibrate video.time automatically
     tools.setVideoTime(currentVideo, data.time);
@@ -120,6 +123,7 @@ server.on("connection", client => {
     try {
       let info = await ytdl.getInfo(data.link);
       let formats = ytdl.filterFormats(info.formats, 'videoandaudio');
+
       tools.playVideo(currentVideo, formats[formats.length - 1].url);
     } catch(err) {
       //if youtube url is invalid or does not exist

@@ -2,7 +2,8 @@ function isAnybodyLeader(clientList)
 {
   var f = false;
   clientList.forEach(client => {
-    if(client.isLeader) return f = true;
+    if(client.isLeader)
+      return f = true;
   })
   return f;
 }
@@ -12,7 +13,8 @@ function getTime(video)
   /* Gets the video's time in milliseconds */
 
   //if the video is paused then return the time when it was unpaused
-  if(video.pause) return video.time;
+  if(video.pause)
+    return video.time;
 
   //set time and return time
   video.time = Date.now() - video.start;
