@@ -14537,21 +14537,23 @@ var currentVideo = {
 
 
 volumeSlider.addEventListener("input", () => {
-  audioBtn.classList.add("activated");
+  //unmute and set the volume
   player.muted = false;
   player.volume = volumeSlider.value / 100;
+
+  //change the look of audioBtn to look activated
+  audioBtn.classList.add("activated");
 })
 
 audioBtn.addEventListener("click", () => {
   //toggle player muted state
   player.muted = !player.muted;
 
-  //set autoBtn class based on muted state
-  if(!player.muted) {
+  //change autoBtn class based on muted state
+  if(!player.muted)
     audioBtn.classList.add("activated");
-  } else {
+  else
     audioBtn.classList.remove("activated");
-  }
 })
 
 thresholdInput.addEventListener("change", () => {
@@ -14564,22 +14566,23 @@ thresholdInput.addEventListener("change", () => {
 })
 
 leaderBtn.addEventListener("click", () => {
+  //on click of the leaderBtn, toggle leader
   client.emit("toggle-leader");
 });
 
 client.on("leader", () => {
+  //when client becomes leader, activate leaderBtn and addLeaderControls
   leaderBtn.classList.add("activated");
   addLeaderControls();
 })
 
 client.on("unleader", () => {
+  //when client loses leader, deactivate leaderBtn and removeLeaderControls
   leaderBtn.classList.remove("activated");
   removeLeaderControls();
 })
 
-client.on("sync", data => {
-  sync(data.video);
-})
+client.on("sync", data => {sync(data.video)});
 
 client.on("reload-subtitle", reloadSubtitle);
 
@@ -14588,20 +14591,16 @@ client.on("reload-subtitle", reloadSubtitle);
 function reloadSubtitle()
 {
   fetch("/sub.vtt").then(res => {
+    //if there is subtitle, then reload the subtitle
     if(res.ok) {
-      //if there is subtitle, then reload the subtitle
-
-      //remove all track elements
-      while(document.getElementById("track"))
-        document.getElementById("track").remove();
+      //remove the current track element
+      document.getElementById("track").remove();
 
       //create new track element and append it to player
       const track = document.createElement("track");
-      track.kind = "captions";
-      track.label = "English";
-      track.srclang = "en";
-      track.src = "/sub.vtt";
       track.id = "track";
+      track.kind = "captions";
+      track.src = "/sub.vtt";
       track.mode = "showing";
       track.default = true;
       player.appendChild(track);
@@ -14611,39 +14610,36 @@ function reloadSubtitle()
 
 function sync(video)
 {
-  const videoLink = video.link;
-  const videoTime = video.time;
-
   //get whether server video is paused
   const paused = (video.pause != null);
 
-  //change the paused button based on paused variable
+  //change the paused button based on whether server video is paused
   const pauseBtn = document.getElementById("pause");
-  if(pauseBtn && paused) {
-    pauseBtn.classList.add("activated");
-    pauseBtn.textContent = "⏸";
-  } else if(pauseBtn) {
-    pauseBtn.classList.remove("activated");
-    pauseBtn.textContent = "▶";
+  if(pauseBtn) {
+    if(paused) {
+      pauseBtn.classList.add("activated");
+      pauseBtn.textContent = "⏸";
+    } else {
+      pauseBtn.classList.remove("activated");
+      pauseBtn.textContent = "▶";
+    }
   }
 
   //if the src is not the same then change src
-  if(player.src != videoLink) {
-    player.src = videoLink;
-    currentVideo.link = videoLink;
+  if(player.src != video.link) {
+    player.src = video.link;
+    currentVideo.link = video.link;
   }
+
+  //set the client videoTime to server videoTime
+  player.currentTime = video.time / 1000;
+  currentVideo.time = video.time;
 
   //set the currentVideo pause state
   currentVideo.paused = paused;
 
-  //set the currentVideo time
-  currentVideo.time = videoTime;
-
-  //convert milliseconds to seconds and set the player's time
-  player.currentTime = videoTime / 1000;
-
-  //if videoTime is greater than or equal to the player duration then return
-  if(videoTime >= player.duration * 1000)
+  //if video.time is greater than or equal to the player duration then return
+  if(video.time >= player.duration * 1000)
     return;
 
   //pause the video accordingly
@@ -14695,9 +14691,9 @@ function update()
 
 function leaderControlsKeydown(event)
 {
-  //if videoInput is focused or ctrl/alt is down, then dont react to keys
   const videoInput = document.getElementById("video-input");
 
+  //if videoInput is focused or ctrl/alt is down, then dont react to keys
   if(document.activeElement == videoInput     ||
      document.activeElement == thresholdInput ||
      event.ctrlKey                            ||
@@ -14822,6 +14818,9 @@ function addLeaderControls()
 
   subtitle.addEventListener("change", () => {
     if(subtitle.files[0]) {
+      //activate the subtitleLabel
+      subtitleLabel.classList.add("activated");
+
       //create the streams
       const file = subtitle.files[0];
       const stream = ss.createStream();
@@ -14830,9 +14829,8 @@ function addLeaderControls()
       //pipe the blobstream to stream
       ss(client).emit('subtitle', stream)
       blobstream.pipe(stream);
-
-      subtitleLabel.classList.add("activated");
     } else {
+      //deactivate the subtitleLabel
       subtitleLabel.classList.remove("activated");
     }
   })
@@ -14840,7 +14838,7 @@ function addLeaderControls()
   videoInput.addEventListener("keydown", event => {
     //if enter key is pressed and videoInput is not blank then play the link
     if(event.code == "Enter" && videoInput.value.trim() != "")
-      client.emit("play-video", { link: videoInput.value });
+      client.emit("play-video", {link: videoInput.value});
   })
 
   leaderControls.appendChild(pause);
@@ -14851,30 +14849,30 @@ function addLeaderControls()
   leaderControls.appendChild(subtitleLabel);
   controlPanel.appendChild(leaderControls);
 
-  //add keybinds
+  //add the leaderControls keybinds
   window.addEventListener("keydown", leaderControlsKeydown);
 }
 
 function removeLeaderControls()
 {
-  //remove keybinds
-  window.removeEventListener("keydown", leaderControlsKeydown);
-
-  //remove leader control panel
+  //remove the leaderControls element
   document.getElementById("leader-controls").remove();
+
+  //remove the leaderControls keybinds
+  window.removeEventListener("keydown", leaderControlsKeydown);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
-  //start update loop after 200 milliseconds
-  setTimeout(update, 200);
+  //set player default volume to 50%
+  player.volume = 0.5;
 
   //reloads the subtitle when the player has changed videos
   player.addEventListener("loadedmetadata", reloadSubtitle);
 
-  //set player default volume to 50%
-  player.volume = 0.5;
+  //start update loop after 200 milliseconds
+  setTimeout(update, 200);
 });
 
 
