@@ -2,13 +2,13 @@ const io = require("socket.io-client");
 const ss = require('socket.io-stream');
 const socket = io();
 
-const leaderBtn = document.getElementById("leader-btn")
-const controlPanel = document.getElementById("control-panel")
-const player = document.getElementById("video-player")
-const progressBar = document.getElementById("progress-bar")
-const audioBtn = document.getElementById("audio")
-const volumeSlider = document.getElementById("volume")
-const thresholdInput = document.getElementById("threshold")
+const leaderBtn =      document.getElementById("leader-btn");
+const controlPanel =   document.getElementById("control-panel");
+const player =         document.getElementById("video-player");
+const progressBar =    document.getElementById("progress-bar");
+const audioBtn =       document.getElementById("audio");
+const volumeSlider =   document.getElementById("volume");
+const thresholdInput = document.getElementById("threshold");
 
 var threshold = 200;
 var currentVideo = {
@@ -25,7 +25,10 @@ volumeSlider.addEventListener("input", () => {
 })
 
 audioBtn.addEventListener("click", () => {
+  //toggle player muted state
   player.muted = !player.muted;
+
+  //set autoBtn class based on muted state
   if(!player.muted) {
     audioBtn.classList.add("activated");
   } else {
@@ -36,7 +39,10 @@ audioBtn.addEventListener("click", () => {
 thresholdInput.addEventListener("change", () => {
   //get threshold from input
   threshold = parseInt(thresholdInput.value);
-  if(isNaN(threshold)) threshold = 200;
+
+  //if input value is not a number, then default to 200
+  if(isNaN(threshold))
+    threshold = 200;
 })
 
 leaderBtn.addEventListener("click", () => {
@@ -59,9 +65,7 @@ socket.on("sync", data => {
 
 socket.on("reload-subtitle", reloadSubtitle);
 
-socket.on("debug", data => {
-  console.log("DEBUG: " + data);
-})
+
 
 function reloadSubtitle()
 {
@@ -103,10 +107,11 @@ function sync(video)
   //get whether server video is paused
   const paused = (video.pause != null);
 
-  //change the paused button based on paused
+  //change the paused button based on paused variable
   if(document.getElementById("pause"))
   {
     const pauseBtn = document.getElementById("pause");
+
     if(paused) {
       pauseBtn.classList.add("activated");
       pauseBtn.textContent = "⏸";
@@ -120,7 +125,8 @@ function sync(video)
   player.currentTime = videoTime / 1000;
 
   //if videoTime is greater than or equal to the player duration then return
-  if(videoTime >= player.duration * 1000) return;
+  if(videoTime >= player.duration * 1000)
+    return;
 
   //pause the video accordingly
   if(paused != player.paused) {
@@ -143,7 +149,8 @@ function update()
   setTimeout(update, 200);
 
   //dont divide by 0 or by NaN
-  if(!player.duration) return;
+  if(!player.duration)
+    return;
 
   //update progress bar
   const bar = progressBar.children[0];
@@ -158,6 +165,7 @@ function togglePause()
   socket.emit("toggle-pause");
 
   const pause = document.getElementById("pause");
+
   if(pause.classList.contains("activated")) {
     pause.classList.remove("activated");
     pause.textContent = "▶";
@@ -171,15 +179,19 @@ function leaderControlsKeydown(event)
 {
   //if videoInput is focused or ctrl/alt is down, then dont react to keys
   const videoInput = document.getElementById("video-input");
+
   if(document.activeElement == videoInput     ||
      document.activeElement == thresholdInput ||
-     event.ctrlKey                            ||
-     event.altKey) return;
+     event.ctrlKey                            || 
+     event.altKey)
+    return;
 
   //if user presses a number
   if(event.code.includes("Digit")) {
     const num = parseInt(event.code[event.code.length - 1]);
     const time = num / 10 * player.duration * 1000;
+
+    //set video time if time is a number
     if(!isNaN(time))
       socket.emit("set-time", {time: time});
   }
@@ -200,16 +212,16 @@ function leaderControlsKeydown(event)
       socket.emit("seek", {time: -10000, duration: player.duration * 1000});
       break;
     case "KeyK":
-      socket.emit("seek", {time: 10000, duration: player.duration * 1000});
+      socket.emit("seek", {time: 10000,  duration: player.duration * 1000});
       break;
     case "KeyL":
-      socket.emit("seek", {time: 60000, duration: player.duration * 1000});
+      socket.emit("seek", {time: 60000,  duration: player.duration * 1000});
       break;
     case "ArrowLeft":
-      socket.emit("seek", {time: -5000, duration: player.duration * 1000});
+      socket.emit("seek", {time: -5000,  duration: player.duration * 1000});
       break;
     case "ArrowRight":
-      socket.emit("seek", {time: 5000, duration: player.duration * 1000});
+      socket.emit("seek", {time: 5000,   duration: player.duration * 1000});
       break;
     default:
       //return if nothing matches
@@ -223,14 +235,14 @@ function leaderControlsKeydown(event)
 
 function addLeaderControls()
 {
-  const leaderControls = document.createElement("section");
-  const pause = document.createElement("button");
-  const seekBTiny = document.createElement("button");
-  const videoInput = document.createElement("input");
-  const seekFTiny = document.createElement("button");
-  const subtitleLabel = document.createElement("label");
+  const leaderControls =    document.createElement("section");
+  const pause =             document.createElement("button");
+  const seekBTiny =         document.createElement("button");
+  const videoInput =        document.createElement("input");
+  const seekFTiny =         document.createElement("button");
+  const subtitleLabel =     document.createElement("label");
   const subtitleLabelIcon = document.createElement("i");
-  const subtitle = document.createElement("input");
+  const subtitle =          document.createElement("input");
 
   pause.classList.add("button")
   seekBTiny.classList.add("button");
@@ -277,7 +289,7 @@ function addLeaderControls()
     socket.emit("seek", {time: -5000, duration: player.duration * 1000});
   })
   seekFTiny.addEventListener("click", () => {
-    socket.emit("seek", {time: 5000, duration: player.duration * 1000});
+    socket.emit("seek", {time: 5000,  duration: player.duration * 1000});
   })
 
   subtitle.addEventListener("change", () => {
