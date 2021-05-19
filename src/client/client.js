@@ -79,7 +79,7 @@ function reloadSubtitle()
       //create new track element and append it to player
       const track = document.createElement("track");
       track.id = "track";
-      track.kind = "captions";
+      track.kind = "subtitles";
       track.src = "/sub.vtt";
       track.mode = "showing";
       track.default = true;
