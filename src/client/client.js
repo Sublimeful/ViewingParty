@@ -39,6 +39,21 @@ audioBtn.addEventListener("click", () => {
     audioBtn.classList.remove("activated");
 })
 
+player.addEventListener("dblclick", function() {
+  if(this.requestFullscreen) {
+    this.requestFullscreen();
+  } 
+  else if(this.mozRequestFullScreen) { 
+    this.mozRequestFullScreen();
+  } 
+  else if(this.webkitRequestFullscreen) { 
+    this.webkitRequestFullscreen();
+  } 
+  else if(this.msRequestFullscreen) { 
+    this.msRequestFullscreen();
+  }
+})
+
 thresholdInput.addEventListener("change", () => {
   //get threshold from input
   threshold = parseInt(thresholdInput.value);
