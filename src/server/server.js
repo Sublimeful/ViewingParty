@@ -93,9 +93,9 @@ server.on("connection", client => {
     //when client seeks
     if(!client.isLeader) return;
 
-    if(!isNaN(data.duration) && data.duration >= tools.getTime(currentVideo)) {
+    if(!isNaN(data.duration) && tools.getTime(currentVideo) >= data.duration) {
       //if the currentVideo time is greater than or equal to the duration of the video
-      tools.setVideoTime(currentVideo, data.time + data.duration);
+      tools.setVideoTime(currentVideo, data.duration + data.time);
     } else {
       //tools.seekVideo will calibrate video.time automatically
       tools.seekVideo(currentVideo, data.time);
