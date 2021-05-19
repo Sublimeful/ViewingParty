@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,19 +9,19 @@
     <title>Viewing Party</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
-<body style="width: max-content">
-  <div id="video-container">
-    <video id="video-player" muted="true"></video>
-  </div>
-  <div id="progress-bar"><div style="width: 0"></div></div>
-  <hr style="margin: 0 0; width: 100%">
-  <div id="control-panel">
-    <input style="width: 5rem" class="input" type="text" placeholder="Sync" id="threshold">
-    <input type="range" min="0" max="100" value="50" id="volume">
-    <button class="button" id="audio">🔊</button>
-    <button class="button" id="leader-btn">⚑</button>
-  </div>
-</body>
-<script src="client.js"></script>
+  </head>
+  <body style="min-width: max-content">
+    <div id="video-container">
+      <video id="video-player" muted="true"></video>
+    </div>
+    <div id="progress-bar"><div style="width: 0"></div></div>
+    <hr style="margin: 0 0; width: 100%">
+    <div id="control-panel">
+      <input style="width: 5rem" class="input" type="text" placeholder="Sync" id="threshold">
+      <input type="range" min="0" max="100" value="50" id="volume">
+      <button class="button" id="audio">🔊</button>
+      <button class="button" id="leader-btn">⚑</button>
+    </div>
+  </body>
+  <script src="client.js"></script>
 </html>
