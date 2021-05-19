@@ -14647,20 +14647,22 @@ function sync(video)
     return;
 
   //pause the video accordingly
-  if(paused) {
-    player.pause();
-  } else {
-    const playPromise = player.play();
+  if(paused != player.paused) {
+    if(paused) {
+      player.pause();
+    } else {
+      const playPromise = player.play();
 
-    // In browsers that don’t yet support this functionality,
-    // playPromise won’t be defined.
-    if (playPromise != undefined) {
-      playPromise.then(function() {
-        // Automatic playback started!
-      }).catch(function(error) {
-        // Automatic playback failed.
-        // Show a UI element to let the user manually start playback.
-      });
+      // In browsers that don’t yet support this functionality,
+      // playPromise won’t be defined.
+      if(playPromise != undefined) {
+        playPromise.then(() => {
+          // Automatic playback started!
+        }).catch(error => {
+          // Automatic playback failed.
+          // Show a UI element to let the user manually start playback.
+        })
+      }
     }
   }
 }
