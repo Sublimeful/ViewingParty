@@ -40,7 +40,7 @@ server.on("connection", client => {
 
     //write the subtitle data to subtitlePath
     stream.pipe(fs.createWriteStream(subtitlePath));
-    
+
     //when piping finishes reload subtitle for every client
     stream.on('finish', () => {
       server.emit("reload-subtitle");
@@ -114,7 +114,7 @@ server.on("connection", client => {
 
     //tools.setVideoTime will calibrate video.time automatically
     tools.setVideoTime(currentVideo, data.time);
-    
+
     //then we sync the user up!
     server.emit("sync", {video: currentVideo});
   })
