@@ -14531,6 +14531,7 @@ var threshold = 200;
 var currentVideo = {
   link: "",
   time: null,
+  paused: true
 }
 
 
@@ -14617,17 +14618,13 @@ function sync(video)
   const paused = (video.pause != null);
 
   //change the paused button based on paused variable
-  if(document.getElementById("pause"))
-  {
-    const pauseBtn = document.getElementById("pause");
-
-    if(paused) {
-      pauseBtn.classList.add("activated");
-      pauseBtn.textContent = "⏸";
-    } else {
-      pauseBtn.classList.remove("activated");
-      pauseBtn.textContent = "▶";
-    }
+  const pauseBtn = document.getElementById("pause");
+  if(pauseBtn && paused) {
+    pauseBtn.classList.add("activated");
+    pauseBtn.textContent = "⏸";
+  } else if(pauseBtn) {
+    pauseBtn.classList.remove("activated");
+    pauseBtn.textContent = "▶";
   }
 
   //if the src is not the same then change src
@@ -14635,6 +14632,9 @@ function sync(video)
     currentVideo.link = videoLink;
     player.src = videoLink;
   }
+
+  //set the currentVideo pause state
+  currentVideo.paused = paused;
 
   //set the currentVideo time, offset by threshold to reduce lag
   currentVideo.time = videoTime + threshold;
@@ -14675,26 +14675,10 @@ function update()
   const progress = player.currentTime / player.duration;
 
   bar.style.width = progress * 100 + "%";
-  if(!player.paused)
+  if(!currentVideo.paused)
     bar.style.backgroundColor = "#42f542";
   else
     bar.style.backgroundColor = "white";
-}
-
-function togglePause()
-{
-  //toggle pause button activation
-  client.emit("toggle-pause");
-
-  const pause = document.getElementById("pause");
-
-  if(pause.classList.contains("activated")) {
-    pause.classList.remove("activated");
-    pause.textContent = "▶";
-  } else {
-    pause.classList.add("activated");
-    pause.textContent = "⏸";
-  }
 }
 
 function leaderControlsKeydown(event)
@@ -14722,10 +14706,10 @@ function leaderControlsKeydown(event)
   switch(event.code)
   {
     case "Space":
-      togglePause();
+      client.emit("toggle-pause");
       break;
     case "KeyP":
-      togglePause();
+      client.emit("toggle-pause");
       break;
     case "KeyH":
       client.emit("seek", {time: -60000, duration: player.duration * 1000});
@@ -14770,7 +14754,6 @@ function addLeaderControls()
   seekBTiny.classList.add("button");
   seekFTiny.classList.add("button");
 
-  pause.textContent = "▶";
   seekBTiny.textContent = "<";
   seekFTiny.textContent = ">";
 
@@ -14778,6 +14761,15 @@ function addLeaderControls()
   pause.id = "pause";
   subtitle.id = "subtitle";
   videoInput.id = "video-input";
+
+  //pause button styling
+  if(currentVideo.paused) {
+    pause.classList.add("activated");
+    pause.textContent = "⏸";
+  } else {
+    pause.classList.remove("activated");
+    pause.textContent = "▶";
+  }
 
   //leaderControls styling
   leaderControls.style.display = "flex";
@@ -14804,7 +14796,9 @@ function addLeaderControls()
   videoInput.placeholder = "Video links go here...";
 
   //pause click event
-  pause.addEventListener("click", togglePause);
+  pause.addEventListener("click", () => {
+    client.emit("toggle-pause");
+  });
 
   //seeking the video
   seekBTiny.addEventListener("click", () => {
