@@ -28,16 +28,13 @@ var currentVideo = {
 
 
 server.on("connection", client => {
-  //add client to list
+  //add client to clientList
   clientList.push(client);
 
-  //client vars
-  client.isSignedIn = false;
+  //client variables
   client.isLeader = false;
 
   ss(client).on('subtitle', stream => {
-    //when client uploads subtitle
-
     //write the subtitle data to subtitlePath
     stream.pipe(fs.createWriteStream(subtitlePath));
 
@@ -48,7 +45,7 @@ server.on("connection", client => {
   })
 
   client.on("toggle-leader", () => {
-    //when client toggles the leader button
+    //toggle leader for client
     if(client.isLeader) {
       client.isLeader = false;
       client.emit("unleader");
@@ -59,8 +56,6 @@ server.on("connection", client => {
   })
 
   client.on("sync", data => {
-    //when client syncs up
-
     //time is in milliseconds
     const clientVideo = data.video;
     const clientTime = data.video.time;
@@ -79,7 +74,6 @@ server.on("connection", client => {
   })
 
   client.on("toggle-pause", () => {
-    //when client toggles pause
     if(!client.isLeader)
       return;
 
@@ -91,12 +85,11 @@ server.on("connection", client => {
   })
 
   client.on("seek", data => {
-    //when client seeks
     if(!client.isLeader)
       return;
 
     if(!isNaN(data.duration) && tools.getTime(currentVideo) >= data.duration) {
-      //if the currentVideo time is greater than or equal to the duration of the video
+      //if currentVideo time is over duration of video, then seek using duration
       tools.setVideoTime(currentVideo, data.duration + data.time);
     } else {
       //tools.seekVideo will calibrate video.time automatically
@@ -108,7 +101,6 @@ server.on("connection", client => {
   })
 
   client.on("set-time", data => {
-    //when client sets time
     if(!client.isLeader)
       return;
 
@@ -120,14 +112,15 @@ server.on("connection", client => {
   })
 
   client.on("play-video", async data => {
-    //plays a new video based on the link given!
     try {
+      //checks if the link is a youtube link
+      //if it is, then use ytdl to get and play the raw link
       let info = await ytdl.getInfo(data.link);
       let formats = ytdl.filterFormats(info.formats, 'videoandaudio');
 
       tools.playVideo(currentVideo, formats[formats.length - 1].url);
     } catch(err) {
-      //if youtube url is invalid or does not exist
+      //if not youtube link, then just play the link as is
       tools.playVideo(currentVideo, data.link);
     }
 
@@ -136,7 +129,7 @@ server.on("connection", client => {
   })
 
   client.on("disconnect", () => {
-    //when client exits
+    //client disconnects from the site, remove client from clientList
     clientList.splice(clientList.indexOf(client), 1);
   })
 });
@@ -144,7 +137,7 @@ server.on("connection", client => {
 
 
 app.get("/", function (req, res) {
-  res.sendFile("public/index.html", { root: path.dirname(".") });
+  res.sendFile("public/index.html", {root: path.dirname(".")});
 });
 
 app.use(express.static("public"));
