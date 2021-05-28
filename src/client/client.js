@@ -250,8 +250,8 @@ function leaderControlsKeydown(event)
 function addLeaderControls()
 {
   const leaderControls =    document.createElement("section");
-  const videoInput =        document.createElement("input");
   const pause =             document.createElement("button");
+  const videoInput =        document.createElement("input");
   const subtitleLabel =     document.createElement("label");
   const subtitleLabelIcon = document.createElement("i");
   const subtitle =          document.createElement("input");
@@ -327,8 +327,8 @@ function addLeaderControls()
       client.emit("play-video", {link: videoInput.value});
   })
 
-  leaderControls.appendChild(videoInput);
   leaderControls.appendChild(pause);
+  leaderControls.appendChild(videoInput);
   leaderControls.appendChild(subtitle);
   leaderControls.appendChild(subtitleLabel);
   controlPanel.appendChild(leaderControls);

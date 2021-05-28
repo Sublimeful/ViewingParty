@@ -14844,8 +14844,8 @@ function addLeaderControls()
       client.emit("play-video", {link: videoInput.value});
   })
 
-  leaderControls.appendChild(videoInput);
   leaderControls.appendChild(pause);
+  leaderControls.appendChild(videoInput);
   leaderControls.appendChild(subtitle);
   leaderControls.appendChild(subtitleLabel);
   controlPanel.appendChild(leaderControls);
