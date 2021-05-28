@@ -250,20 +250,21 @@ function leaderControlsKeydown(event)
 function addLeaderControls()
 {
   const leaderControls =    document.createElement("section");
-  const pause =             document.createElement("button");
   const videoInput =        document.createElement("input");
+  const pause =             document.createElement("button");
   const subtitleLabel =     document.createElement("label");
   const subtitleLabelIcon = document.createElement("i");
   const subtitle =          document.createElement("input");
 
-  pause.classList.add("button")
-
+  // set the id for each element
   leaderControls.id = "leader-controls";
   pause.id = "pause";
   subtitle.id = "subtitle";
   videoInput.id = "video-input";
 
   //pause button styling
+  pause.classList.add("button")
+
   if(currentVideo.paused) {
     pause.classList.add("activated");
     pause.textContent = "⏸";
@@ -326,8 +327,8 @@ function addLeaderControls()
       client.emit("play-video", {link: videoInput.value});
   })
 
-  leaderControls.appendChild(pause);
   leaderControls.appendChild(videoInput);
+  leaderControls.appendChild(pause);
   leaderControls.appendChild(subtitle);
   leaderControls.appendChild(subtitleLabel);
   controlPanel.appendChild(leaderControls);
