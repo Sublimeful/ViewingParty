@@ -12,7 +12,7 @@
     "socket.io-client": "^4.0.1",
     "socket.io-stream": "^0.9.1",
     "watchify": "^4.0.0",
-    "ytdl-core": "^4.8.0"
+    "ytdl-core": "^4.8.2"
   },
   "devDependencies": {},
   "scripts": {

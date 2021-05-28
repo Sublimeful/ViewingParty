@@ -8,7 +8,7 @@ import fs from "fs";
 import * as tools from "./ServerTools.js";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 const httpServer = app.listen(port, () => {
   console.log("server is listening on port " + port + "!");
@@ -34,21 +34,10 @@ server.on("connection", client => {
   //client variables
   client.isLeader = false;
 
-  ss(client).on('subtitle', stream => {
-    //write the subtitle data to subtitlePath
-    stream.pipe(fs.createWriteStream(subtitlePath));
-
-    //when piping finishes reload subtitle for every client
-    stream.on('finish', () => {
-      server.emit("reload-subtitle");
-    })
-  })
-
   client.on("toggle-leader", () => {
     //toggle leader for client
     if(client.isLeader) {
       client.isLeader = false;
-      client.emit("unleader");
     } else if(!tools.isAnybodyLeader(clientList)) {
       client.isLeader = true;
       client.emit("leader");
@@ -71,6 +60,19 @@ server.on("connection", client => {
     if(Math.abs(tools.getTime(currentVideo) - clientTime) > threshold) {
       client.emit("sync", {video: currentVideo});
     }
+  })
+
+  ss(client).on('subtitle', stream => {
+    if(!client.isLeader)
+      return;
+
+    //write the subtitle data to subtitlePath
+    stream.pipe(fs.createWriteStream(subtitlePath));
+
+    //when piping finishes reload subtitle for every client
+    stream.on('finish', () => {
+      server.emit("reload-subtitle");
+    })
   })
 
   client.on("toggle-pause", () => {
@@ -112,6 +114,9 @@ server.on("connection", client => {
   })
 
   client.on("play-video", async data => {
+    if(!client.isLeader)
+      return;
+
     try {
       //checks if the link is a youtube link
       //if it is, then use ytdl to get and play the raw link
