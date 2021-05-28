@@ -251,19 +251,12 @@ function addLeaderControls()
 {
   const leaderControls =    document.createElement("section");
   const pause =             document.createElement("button");
-  const seekBTiny =         document.createElement("button");
   const videoInput =        document.createElement("input");
-  const seekFTiny =         document.createElement("button");
   const subtitleLabel =     document.createElement("label");
   const subtitleLabelIcon = document.createElement("i");
   const subtitle =          document.createElement("input");
 
   pause.classList.add("button")
-  seekBTiny.classList.add("button");
-  seekFTiny.classList.add("button");
-
-  seekBTiny.textContent = "<";
-  seekFTiny.textContent = ">";
 
   leaderControls.id = "leader-controls";
   pause.id = "pause";
@@ -308,14 +301,6 @@ function addLeaderControls()
     client.emit("toggle-pause");
   });
 
-  //seeking the video
-  seekBTiny.addEventListener("click", () => {
-    client.emit("seek", {time: -5000, duration: player.duration * 1000});
-  })
-  seekFTiny.addEventListener("click", () => {
-    client.emit("seek", {time: 5000,  duration: player.duration * 1000});
-  })
-
   subtitle.addEventListener("change", () => {
     if(subtitle.files[0]) {
       //activate the subtitleLabel
@@ -342,9 +327,7 @@ function addLeaderControls()
   })
 
   leaderControls.appendChild(pause);
-  leaderControls.appendChild(seekBTiny);
   leaderControls.appendChild(videoInput);
-  leaderControls.appendChild(seekFTiny);
   leaderControls.appendChild(subtitle);
   leaderControls.appendChild(subtitleLabel);
   controlPanel.appendChild(leaderControls);
