@@ -14536,6 +14536,11 @@ var currentVideo = {
 
 
 
+progressBar.addEventListener("click", event => {
+  // set video currentTime when click on progressBar
+  client.emit("set-time", {time: (event.clientX / document.body.clientWidth) * player.duration * 1000});
+})
+
 volumeSlider.addEventListener("input", () => {
   //unmute and set the volume
   player.muted = false;
@@ -14586,18 +14591,18 @@ thresholdInput.addEventListener("change", () => {
     threshold = 400;
 })
 
-leaderBtn.addEventListener("click", () => {client.emit("toggle-leader")});
+leaderBtn.addEventListener("click", () => {
+  //pretends to remove leader stuff
+  leaderBtn.classList.remove("activated");
+  removeLeaderControls();
+
+  client.emit("toggle-leader")
+});
 
 client.on("leader", () => {
   //when client becomes leader, activate leaderBtn and addLeaderControls
   leaderBtn.classList.add("activated");
   addLeaderControls();
-})
-
-client.on("unleader", () => {
-  //when client loses leader, deactivate leaderBtn and removeLeaderControls
-  leaderBtn.classList.remove("activated");
-  removeLeaderControls();
 })
 
 client.on("sync", data => {sync(data.video)});
@@ -14718,14 +14723,13 @@ function leaderControlsKeydown(event)
      event.altKey)
     return;
 
-  //if user presses a number
-  if(event.code.includes("Digit")) {
-    const num = parseInt(event.code[event.code.length - 1]);
+  //if user presses a number (tests is event.key only has numbers in it)
+  if(/^\d+$/.test(event.key)) {
+    const num = parseInt(event.key);
     const time = num / 10 * player.duration * 1000;
 
     //set video time if time is a number
-    if(!isNaN(time))
-      client.emit("set-time", {time: time});
+    client.emit("set-time", {time: time});
   }
 
   //compare keycode and act on key that is pressed
@@ -14767,8 +14771,8 @@ function leaderControlsKeydown(event)
 function addLeaderControls()
 {
   const leaderControls =    document.createElement("section");
-  const videoInput =        document.createElement("input");
   const pause =             document.createElement("button");
+  const videoInput =        document.createElement("input");
   const subtitleLabel =     document.createElement("label");
   const subtitleLabelIcon = document.createElement("i");
   const subtitle =          document.createElement("input");
@@ -14840,7 +14844,7 @@ function addLeaderControls()
 
   videoInput.addEventListener("keydown", event => {
     //if enter key is pressed and videoInput is not blank then play the link
-    if(event.code == "Enter" && videoInput.value.trim())
+    if(event.key == "Enter" && videoInput.value.trim())
       client.emit("play-video", {link: videoInput.value});
   })
 
@@ -14856,8 +14860,8 @@ function addLeaderControls()
 
 function removeLeaderControls()
 {
-  //remove the leaderControls element
-  document.getElementById("leader-controls").remove();
+  //remove all leaderControl elements
+  document.querySelectorAll("#leader-controls").forEach(t => {t.remove()});
 
   //remove the leaderControls keybinds
   window.removeEventListener("keydown", leaderControlsKeydown);
