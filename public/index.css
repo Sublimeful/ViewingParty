@@ -33,6 +33,8 @@ input[type="file"] {
 #video-container {
   width:  100%;
   height: calc(95% - 52px);
+  display: flex;
+  flex-direction: column;
 }
 #video-player {
   width:   100%;
@@ -42,6 +44,7 @@ input[type="file"] {
 #video-player::-webkit-media-controls {
   display: none !important;
 }
+
 
 #progress-bar {
   width:  100%;
@@ -55,6 +58,7 @@ input[type="file"] {
   transition: 150ms opacity;
   opacity:    0.5;
 }
+
 
 #control-panel {
   display:         flex;

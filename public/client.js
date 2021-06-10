@@ -14574,12 +14574,13 @@ player.addEventListener("click", function foo() {
 
   function fullscreenFunction() {
     if(!document.fullscreenElement) {
-      if(this.requestFullscreen) {
-        this.requestFullscreen();
-      } else if(this.webkitRequestFullscreen) { /* Safari */
-        this.webkitRequestFullscreen();
-      } else if(this.msRequestFullscreen) { /* IE11 */
-        this.msRequestFullscreen();
+      const el = this.parentNode;
+      if(el.requestFullscreen) {
+        el.requestFullscreen();
+      } else if(el.webkitRequestFullscreen) { /* Safari */
+        el.webkitRequestFullscreen();
+      } else if(el.msRequestFullscreen) { /* IE11 */
+        el.msRequestFullscreen();
       }
     } else {
       if(document.exitFullscreen) {
