@@ -1,17 +1,17 @@
-const io = require("socket.io-client");
-const ss = require('socket.io-stream');
+const io     = require("socket.io-client");
+const ss     = require('socket.io-stream');
 const client = io();
 
-const leaderBtn =      document.getElementById("leader-btn");
-const controlPanel =   document.getElementById("control-panel");
-const videoPlayer =    document.getElementById("video-player");
+const leaderBtn      = document.getElementById("leader-btn");
+const controlPanel   = document.getElementById("control-panel");
+const videoPlayer    = document.getElementById("video-player");
 const videoContainer = document.getElementById("video-container");
-const progressBar =    document.getElementById("progress-bar");
-const audioBtn =       document.getElementById("audio");
-const volumeSlider =   document.getElementById("volume");
+const progressBar    = document.getElementById("progress-bar");
+const audioBtn       = document.getElementById("audio");
+const volumeSlider   = document.getElementById("volume");
 const thresholdInput = document.getElementById("threshold");
 
-var threshold = 400;
+var threshold    = 400;
 var currentVideo = {
   link: "",
   time: null,
@@ -34,7 +34,7 @@ client.on("reload-subtitle", () => {
   showNotif("🎬 New subtitles have been applied!")
 });
 
-client.on("sync", data => {sync(data.video)});
+client.on("sync",   data => {sync(data.video)});
 
 client.on("notify", data => {showNotif(data.message)});
 
@@ -49,11 +49,11 @@ function reloadSubtitle()
       document.querySelectorAll("#track").forEach(t => {t.remove()});
 
       //create new track element and append it to videoPlayer
-      const track = document.createElement("track");
-      track.id = "track";
-      track.kind = "subtitles";
-      track.src = "/sub.vtt";
-      track.mode = "showing";
+      const track   = document.createElement("track");
+      track.id      = "track";
+      track.kind    = "subtitles";
+      track.src     = "/sub.vtt";
+      track.mode    = "showing";
       track.default = true;
       videoPlayer.appendChild(track);
     }
@@ -79,7 +79,7 @@ function sync(video)
 
   //if the src is not the same then change src
   if(videoPlayer.src != video.link) {
-    videoPlayer.src = video.link;
+    videoPlayer.src   = video.link;
     currentVideo.link = video.link;
 
     //send a notification for new video
@@ -88,7 +88,7 @@ function sync(video)
 
   //set the client videoTime to server videoTime
   videoPlayer.currentTime = video.time / 1000;
-  currentVideo.time = video.time;
+  currentVideo.time       = video.time;
 
   //set the currentVideo pause state
   currentVideo.paused = paused;
@@ -134,7 +134,7 @@ function update()
     return;
 
   //update progress bar, change bar color based on whether video is paused
-  const bar = progressBar.children[0];
+  const bar      = progressBar.children[0];
   const progress = videoPlayer.currentTime / videoPlayer.duration;
 
   bar.style.width = progress * 100 + "%";
@@ -170,28 +170,28 @@ function leaderControlsKeydown(event)
       client.emit("toggle-pause");
       break;
     case "KeyH":
-      client.emit("seek", {time: -60000, duration: videoPlayer.duration * 1000});
+      client.emit("seek", {time: -60000,   duration: videoPlayer.duration * 1000});
       break;
     case "KeyJ":
-      client.emit("seek", {time: -1000, duration: videoPlayer.duration * 1000});
+      client.emit("seek", {time: -1000,    duration: videoPlayer.duration * 1000});
       break;
     case "KeyK":
-      client.emit("seek", {time: 1000,  duration: videoPlayer.duration * 1000});
+      client.emit("seek", {time: 1000,     duration: videoPlayer.duration * 1000});
       break;
     case "KeyL":
-      client.emit("seek", {time: 60000,  duration: videoPlayer.duration * 1000});
+      client.emit("seek", {time: 60000,    duration: videoPlayer.duration * 1000});
       break;
     case "ArrowLeft":
-      client.emit("seek", {time: -5000,  duration: videoPlayer.duration * 1000});
+      client.emit("seek", {time: -5000,    duration: videoPlayer.duration * 1000});
       break;
     case "ArrowRight":
-      client.emit("seek", {time: 5000,   duration: videoPlayer.duration * 1000});
+      client.emit("seek", {time: 5000,     duration: videoPlayer.duration * 1000});
       break;
     case "Comma":
-      client.emit("seek", {time: -1000/60,  duration: videoPlayer.duration * 1000});
+      client.emit("seek", {time: -1000/60, duration: videoPlayer.duration * 1000});
       break;
     case "Period":
-      client.emit("seek", {time: 1000/60,   duration: videoPlayer.duration * 1000});
+      client.emit("seek", {time: 1000/60,  duration: videoPlayer.duration * 1000});
       break;
     default:
       //return if nothing matches
@@ -205,18 +205,18 @@ function leaderControlsKeydown(event)
 
 function addLeaderControls()
 {
-  const leaderControls =    document.createElement("section");
-  const pause =             document.createElement("button");
-  const videoInput =        document.createElement("input");
-  const subtitleLabel =     document.createElement("label");
+  const leaderControls    = document.createElement("section");
+  const pause             = document.createElement("button");
+  const videoInput        = document.createElement("input");
+  const subtitleLabel     = document.createElement("label");
   const subtitleLabelIcon = document.createElement("i");
-  const subtitle =          document.createElement("input");
+  const subtitle          = document.createElement("input");
 
   // set the id for each element
   leaderControls.id = "leader-controls";
-  pause.id = "pause";
-  subtitle.id = "subtitle";
-  videoInput.id = "video-input";
+  pause.id          = "pause";
+  subtitle.id       = "subtitle";
+  videoInput.id     = "video-input";
 
   //pause button styling
   pause.classList.add("button")
@@ -230,13 +230,13 @@ function addLeaderControls()
   }
 
   //leaderControls styling
-  leaderControls.style.display = "flex";
+  leaderControls.style.display    = "flex";
   leaderControls.style.alignItems = "center";
 
   //make the subtitle button look prettier
-  subtitleLabel.style.color = "white";
+  subtitleLabel.style.color    = "white";
   subtitleLabel.style.minWidth = "102.5px";
-  subtitleLabel.htmlFor = "subtitle";
+  subtitleLabel.htmlFor        = "subtitle";
   subtitleLabel.classList.add("file-upload");
   subtitleLabel.appendChild(subtitleLabelIcon);
   subtitleLabelIcon.classList.add("fa");
@@ -244,14 +244,14 @@ function addLeaderControls()
   subtitleLabel.innerHTML += " Subtitle";
 
   //set subtitle button to only accept vtt
-  subtitle.type = "file";
+  subtitle.type   = "file";
   subtitle.accept = ".vtt";
 
   //videoInput styling
   videoInput.classList.add("input");
-  videoInput.type = "text";
+  videoInput.type           = "text";
   videoInput.style.minWidth = "5rem";
-  videoInput.placeholder = "Video links go here...";
+  videoInput.placeholder    = "Video links go here...";
 
   //pause click event
   pause.addEventListener("click", () => {
@@ -264,8 +264,8 @@ function addLeaderControls()
       subtitleLabel.classList.add("activated");
 
       //create the streams
-      const file = subtitle.files[0];
-      const stream = ss.createStream();
+      const file       = subtitle.files[0];
+      const stream     = ss.createStream();
       const blobstream = ss.createBlobReadStream(file);
 
       //pipe the blobstream to stream
@@ -309,14 +309,14 @@ function showNotif(text) {
   container.classList.add("is-danger");
   deleteBtn.classList.add("delete");
 
-  container.textContent = text;
-  container.style.position = "absolute";
-  container.style.bottom = 0;
-  container.style.right = 0;
-  container.style.transition = "200ms transform";
-  container.style.transform = "translateY(100%)";
+  container.textContent           = text;
+  container.style.position        = "absolute";
+  container.style.bottom          = 0;
+  container.style.right           = 0;
+  container.style.transition      = "200ms transform";
+  container.style.transform       = "translateY(100%)";
   container.style.backgroundColor = "black";
-  container.style.border = "2px solid red";
+  container.style.border          = "2px solid red";
 
   deleteBtn.style.backgroundColor = "red";
 
@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // hide cursor on cursor inactivity on videoPlayer
   videoPlayer.addEventListener("mousemove", function foo() {
-    videoPlayer.style.cursor = "default";
+    videoPlayer.style.cursor  = "default";
     progressBar.style.opacity = "1.0";
 
     clearTimeout(foo.moved);
@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   volumeSlider.addEventListener("input", () => {
     //unmute and set the volume
-    videoPlayer.muted = false;
+    videoPlayer.muted  = false;
     videoPlayer.volume = volumeSlider.value / 100;
 
     //change the look of audioBtn to look activated

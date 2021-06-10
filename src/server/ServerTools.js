@@ -23,17 +23,17 @@ function getTime(video)
 
 function playVideo(video, videoLink)
 {
-  video.link = videoLink;
+  video.link  = videoLink;
   video.start = Date.now();
   video.pause = null;
-  video.time = 0;
+  video.time  = 0;
 }
 
 function togglePauseVideo(video)
 {
   if(!video.pause) {
     //set time before pause
-    video.time = Date.now() - video.start;
+    video.time  = Date.now() - video.start;
 
     video.pause = Date.now();
   } else {
@@ -41,7 +41,7 @@ function togglePauseVideo(video)
     video.pause = null;
 
     //set time after unpause
-    video.time = Date.now() - video.start;
+    video.time  = Date.now() - video.start;
   }
 }
 
