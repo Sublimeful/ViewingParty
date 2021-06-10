@@ -151,10 +151,10 @@ function leaderControlsKeydown(event)
 
   //if videoInput is focused or ctrl/alt is down, then dont react to keys
   if(document.activeElement == videoInput     ||
-    document.activeElement == thresholdInput ||
-    event.ctrlKey                            ||
-    event.altKey)
-    return;
+     document.activeElement == thresholdInput ||
+     event.ctrlKey                            ||
+     event.altKey)
+     return;
 
   //if user presses a number (tests if event.key only has numbers in it)
   if(/^\d+$/.test(event.key)) {
@@ -360,9 +360,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000)
   })
 
-  // set video currentTime when click on progressBar
   progressBar.addEventListener("click", event => {
-    client.emit("set-time", {time: (event.clientX / document.body.clientWidth) * videoPlayer.duration * 1000});
+    // get percentage by diving mouse x by body width
+    const percentage = event.clientX / document.body.clientWidth;
+
+    // set video time using percentage
+    client.emit("set-time", {time: percentage * videoPlayer.duration * 1000});
   })
 
   audioBtn.addEventListener("click", () => {
