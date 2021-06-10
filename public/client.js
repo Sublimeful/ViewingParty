@@ -14608,7 +14608,6 @@ player.addEventListener("mousemove", function foo() {
   clearTimeout(foo.moved);
   
   foo.moved = setTimeout(() => {
-    console.log("HIDE")
     player.style.cursor = "none";
   }, 1000)
 })

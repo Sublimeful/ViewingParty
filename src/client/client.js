@@ -86,15 +86,13 @@ player.addEventListener("click", function foo() {
 
 player.addEventListener("mousemove", function foo() {
   // hide cursor on cursor inactivity on player
+  player.style.cursor = "default";
+
   clearTimeout(foo.moved);
   
   foo.moved = setTimeout(() => {
     player.style.cursor = "none";
   }, 1000)
-})
-
-document.addEventListener("mousemove", () => {
-  player.style.cursor = "default";
 })
 
 thresholdInput.addEventListener("change", () => {
