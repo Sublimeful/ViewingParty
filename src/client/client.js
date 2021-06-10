@@ -138,7 +138,8 @@ function update()
   const progress = videoPlayer.currentTime / videoPlayer.duration;
 
   bar.style.width = progress * 100 + "%";
-  if(!currentVideo.paused)
+
+  if(!currentVideo.paused && progress != 1)
     bar.style.backgroundColor = "#42f542";
   else
     bar.style.backgroundColor = "white";
