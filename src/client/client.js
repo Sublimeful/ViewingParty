@@ -4,7 +4,8 @@ const client = io();
 
 const leaderBtn =      document.getElementById("leader-btn");
 const controlPanel =   document.getElementById("control-panel");
-const player =         document.getElementById("video-player");
+const videoPlayer =    document.getElementById("video-player");
+const videoContainer = document.getElementById("video-container");
 const progressBar =    document.getElementById("progress-bar");
 const audioBtn =       document.getElementById("audio");
 const volumeSlider =   document.getElementById("volume");
@@ -21,30 +22,30 @@ var currentVideo = {
 
 progressBar.addEventListener("click", event => {
   // set video currentTime when click on progressBar
-  client.emit("set-time", {time: (event.clientX / document.body.clientWidth) * player.duration * 1000});
+  client.emit("set-time", {time: (event.clientX / document.body.clientWidth) * videoPlayer.duration * 1000});
 })
 
 volumeSlider.addEventListener("input", () => {
   //unmute and set the volume
-  player.muted = false;
-  player.volume = volumeSlider.value / 100;
+  videoPlayer.muted = false;
+  videoPlayer.volume = volumeSlider.value / 100;
 
   //change the look of audioBtn to look activated
   audioBtn.classList.add("activated");
 })
 
 audioBtn.addEventListener("click", () => {
-  //toggle player muted state
-  player.muted = !player.muted;
+  //toggle videoPlayer muted state
+  videoPlayer.muted = !videoPlayer.muted;
 
   //change autoBtn class based on muted state
-  if(!player.muted)
+  if(!videoPlayer.muted)
     audioBtn.classList.add("activated");
   else
     audioBtn.classList.remove("activated");
 })
 
-player.addEventListener("click", function foo() {
+videoPlayer.addEventListener("click", function foo() {
   // debounce is a static variable :0
   if(typeof foo.debounce == 'undefined') {
     foo.debounce = false;
@@ -57,12 +58,12 @@ player.addEventListener("click", function foo() {
 
   function fullscreenFunction() {
     if(!document.fullscreenElement) {
-      if(this.requestFullscreen) {
-        this.requestFullscreen();
-      } else if(this.webkitRequestFullscreen) { /* Safari */
-        this.webkitRequestFullscreen();
-      } else if(this.msRequestFullscreen) { /* IE11 */
-        this.msRequestFullscreen();
+      if(videoContainer.requestFullscreen) {
+        videoContainer.requestFullscreen();
+      } else if(videoContainer.webkitRequestFullscreen) { /* Safari */
+        videoContainer.webkitRequestFullscreen();
+      } else if(videoContainer.msRequestFullscreen) { /* IE11 */
+        videoContainer.msRequestFullscreen();
       }
     } else {
       if(document.exitFullscreen) {
@@ -76,22 +77,22 @@ player.addEventListener("click", function foo() {
   }
 
   // if the user clicks again within 250 seconds, then go into fullscreen
-  player.addEventListener("click", fullscreenFunction);
+  videoPlayer.addEventListener("click", fullscreenFunction);
 
   setTimeout(() => {
-    player.removeEventListener("click", fullscreenFunction);
+    videoPlayer.removeEventListener("click", fullscreenFunction);
     foo.debounce = false;
   }, 250)
 })
 
-player.addEventListener("mousemove", function foo() {
-  // hide cursor on cursor inactivity on player
-  player.style.cursor = "default";
+videoPlayer.addEventListener("mousemove", function foo() {
+  // hide cursor on cursor inactivity on videoPlayer
+  videoPlayer.style.cursor = "default";
 
   clearTimeout(foo.moved);
   
   foo.moved = setTimeout(() => {
-    player.style.cursor = "none";
+    videoPlayer.style.cursor = "none";
   }, 1000)
 })
 
@@ -132,14 +133,14 @@ function reloadSubtitle()
       //remove all track elements with track id
       document.querySelectorAll("#track").forEach(t => {t.remove()});
 
-      //create new track element and append it to player
+      //create new track element and append it to videoPlayer
       const track = document.createElement("track");
       track.id = "track";
       track.kind = "subtitles";
       track.src = "/sub.vtt";
       track.mode = "showing";
       track.default = true;
-      player.appendChild(track);
+      videoPlayer.appendChild(track);
     }
   })
 }
@@ -162,28 +163,28 @@ function sync(video)
   }
 
   //if the src is not the same then change src
-  if(player.src != video.link) {
-    player.src = video.link;
+  if(videoPlayer.src != video.link) {
+    videoPlayer.src = video.link;
     currentVideo.link = video.link;
   }
 
   //set the client videoTime to server videoTime
-  player.currentTime = video.time / 1000;
+  videoPlayer.currentTime = video.time / 1000;
   currentVideo.time = video.time;
 
   //set the currentVideo pause state
   currentVideo.paused = paused;
 
-  //if video.time is greater than or equal to the player duration then return
-  if(video.time >= player.duration * 1000)
+  //if video.time is greater than or equal to the videoPlayer duration then return
+  if(video.time >= videoPlayer.duration * 1000)
     return;
 
   //pause the video accordingly
-  if(paused != player.paused) {
+  if(paused != videoPlayer.paused) {
     if(paused) {
-      player.pause();
+      videoPlayer.pause();
     } else {
-      const playPromise = player.play();
+      const playPromise = videoPlayer.play();
 
       // In browsers that don’t yet support this functionality,
       // playPromise won’t be defined.
@@ -202,7 +203,7 @@ function sync(video)
 function update()
 {
   //set the currentVideo time
-  currentVideo.time = player.currentTime * 1000;
+  currentVideo.time = videoPlayer.currentTime * 1000;
 
   //send a sync emit, pre-increase time by threshold to reduce lag
   client.emit("sync", {video: {...currentVideo, time: currentVideo.time + threshold}, threshold: threshold});
@@ -211,12 +212,12 @@ function update()
   setTimeout(update, 200);
 
   //dont divide by 0 or by NaN
-  if(!player.duration)
+  if(!videoPlayer.duration)
     return;
 
   //update progress bar, change bar color based on whether video is paused
   const bar = progressBar.children[0];
-  const progress = player.currentTime / player.duration;
+  const progress = videoPlayer.currentTime / videoPlayer.duration;
 
   bar.style.width = progress * 100 + "%";
   if(!currentVideo.paused)
@@ -238,7 +239,7 @@ function leaderControlsKeydown(event)
 
   //if user presses a number (tests if event.key only has numbers in it)
   if(/^\d+$/.test(event.key)) {
-    client.emit("set-time", {time: (parseInt(event.key) / 10) * player.duration * 1000});
+    client.emit("set-time", {time: (parseInt(event.key) / 10) * videoPlayer.duration * 1000});
   }
 
   //compare keycode and act on key that is pressed
@@ -250,28 +251,28 @@ function leaderControlsKeydown(event)
       client.emit("toggle-pause");
       break;
     case "KeyH":
-      client.emit("seek", {time: -60000, duration: player.duration * 1000});
+      client.emit("seek", {time: -60000, duration: videoPlayer.duration * 1000});
       break;
     case "KeyJ":
-      client.emit("seek", {time: -1000, duration: player.duration * 1000});
+      client.emit("seek", {time: -1000, duration: videoPlayer.duration * 1000});
       break;
     case "KeyK":
-      client.emit("seek", {time: 1000,  duration: player.duration * 1000});
+      client.emit("seek", {time: 1000,  duration: videoPlayer.duration * 1000});
       break;
     case "KeyL":
-      client.emit("seek", {time: 60000,  duration: player.duration * 1000});
+      client.emit("seek", {time: 60000,  duration: videoPlayer.duration * 1000});
       break;
     case "ArrowLeft":
-      client.emit("seek", {time: -5000,  duration: player.duration * 1000});
+      client.emit("seek", {time: -5000,  duration: videoPlayer.duration * 1000});
       break;
     case "ArrowRight":
-      client.emit("seek", {time: 5000,   duration: player.duration * 1000});
+      client.emit("seek", {time: 5000,   duration: videoPlayer.duration * 1000});
       break;
     case "Comma":
-      client.emit("seek", {time: -1000/60,  duration: player.duration * 1000});
+      client.emit("seek", {time: -1000/60,  duration: videoPlayer.duration * 1000});
       break;
     case "Period":
-      client.emit("seek", {time: 1000/60,   duration: player.duration * 1000});
+      client.emit("seek", {time: 1000/60,   duration: videoPlayer.duration * 1000});
       break;
     default:
       //return if nothing matches
@@ -385,11 +386,11 @@ function removeLeaderControls()
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
-  //set player default volume to 50%
-  player.volume = 0.5;
+  //set videoPlayer default volume to 50%
+  videoPlayer.volume = 0.5;
 
-  //reloads the subtitle when the player has changed videos
-  player.addEventListener("loadedmetadata", reloadSubtitle);
+  //reloads the subtitle when the videoPlayer has changed videos
+  videoPlayer.addEventListener("loadedmetadata", reloadSubtitle);
 
   //start update loop after 200 milliseconds
   setTimeout(update, 200);

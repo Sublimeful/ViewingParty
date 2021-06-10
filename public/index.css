@@ -38,7 +38,7 @@ input[type="file"] {
 }
 #video-player {
   width:   100%;
-  height:  100%;
+  height:  calc(100% - 10px);
   outline: none;
 }
 #video-player::-webkit-media-controls {
