@@ -14561,25 +14561,41 @@ audioBtn.addEventListener("click", () => {
     audioBtn.classList.remove("activated");
 })
 
-player.addEventListener("dblclick", function() {
-  //toggle fullscreen if possible
-  if(!document.fullscreenElement) {
-    if(this.requestFullscreen) {
-      this.requestFullscreen();
-    } else if(this.webkitRequestFullscreen) { /* Safari */
-      this.webkitRequestFullscreen();
-    } else if(this.msRequestFullscreen) { /* IE11 */
-      this.msRequestFullscreen();
-    }
-  } else {
-    if(document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if(document.webkitExitFullscreen) { /* Safari */
-      document.webkitExitFullscreen();
-    } else if(document.msExitFullscreen) { /* IE11 */
-      document.msExitFullscreen();
+player.addEventListener("click", function foo() {
+  // debounce is to check whether the 200 millisecond timeout is done
+  if(typeof foo.debounce == 'undefined') {
+    foo.debounce = false;
+  }
+
+  if(foo.debounce) return;
+  foo.debounce = true;
+
+  function fullscreenFunction() {
+    if(!document.fullscreenElement) {
+      if(this.requestFullscreen) {
+        this.requestFullscreen();
+      } else if(this.webkitRequestFullscreen) { /* Safari */
+        this.webkitRequestFullscreen();
+      } else if(this.msRequestFullscreen) { /* IE11 */
+        this.msRequestFullscreen();
+      }
+    } else {
+      if(document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if(document.webkitExitFullscreen) { /* Safari */
+        document.webkitExitFullscreen();
+      } else if(document.msExitFullscreen) { /* IE11 */
+        document.msExitFullscreen();
+      }
     }
   }
+
+  player.addEventListener("click", fullscreenFunction);
+
+  setTimeout(() => {
+    player.removeEventListener("click", fullscreenFunction);
+    foo.debounce = false;
+  }, 250)
 })
 
 thresholdInput.addEventListener("change", () => {
