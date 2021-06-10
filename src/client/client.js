@@ -206,13 +206,9 @@ function leaderControlsKeydown(event)
      event.altKey)
     return;
 
-  //if user presses a number (tests is event.key only has numbers in it)
+  //if user presses a number (tests if event.key only has numbers in it)
   if(/^\d+$/.test(event.key)) {
-    const num = parseInt(event.key);
-    const time = num / 10 * player.duration * 1000;
-
-    //set video time if time is a number
-    client.emit("set-time", {time: time});
+    client.emit("set-time", {time: (parseInt(event.key) / 10) * player.duration * 1000});
   }
 
   //compare keycode and act on key that is pressed
