@@ -303,12 +303,12 @@ function removeLeaderControls()
 }
 
 function showNotif(text) {
-	const container = document.createElement("div");
-	const deleteBtn = document.createElement("button");
+  const container = document.createElement("div");
+  const deleteBtn = document.createElement("button");
   container.classList.add("notification");
   container.classList.add("is-danger");
-	deleteBtn.classList.add("delete");
-  
+  deleteBtn.classList.add("delete");
+
   container.textContent = text;
   container.style.position = "absolute";
   container.style.bottom = 0;
@@ -317,7 +317,7 @@ function showNotif(text) {
   container.style.transform = "translateY(100%)";
   container.style.backgroundColor = "black";
   container.style.border = "2px solid red";
-  
+
   deleteBtn.style.backgroundColor = "red";
 
   setTimeout(() => {
