@@ -14562,11 +14562,13 @@ audioBtn.addEventListener("click", () => {
 })
 
 player.addEventListener("click", function foo() {
-  // debounce is to check whether the 200 millisecond timeout is done
+  // debounce is a static variable :0
   if(typeof foo.debounce == 'undefined') {
     foo.debounce = false;
   }
 
+  // blocks the user from starting this function again
+  // until removeEventListener has been called
   if(foo.debounce) return;
   foo.debounce = true;
 
@@ -14590,6 +14592,7 @@ player.addEventListener("click", function foo() {
     }
   }
 
+  // if the user clicks again within 250 seconds, then go into fullscreen
   player.addEventListener("click", fullscreenFunction);
 
   setTimeout(() => {
