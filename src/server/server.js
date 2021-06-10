@@ -38,10 +38,17 @@ server.on("connection", client => {
     //toggle leader for client
     if(client.isLeader) {
       client.isLeader = false;
-    } else if(!tools.isAnybodyLeader(clientList)) {
+      return;
+    }
+
+    if(!tools.isAnybodyLeader(clientList)) {
       client.isLeader = true;
       client.emit("leader");
+      return;
     }
+
+    // notify client if someone else is already a leader
+    client.emit("notify", {message: "🏳️ Somebody else is already leader!"})
   })
 
   client.on("sync", data => {
