@@ -14601,11 +14601,21 @@ player.addEventListener("click", function foo() {
   }, 250)
 })
 
-player.addEventListener("mousemove", () => {
-  console.log("ASD");
+player.addEventListener("mousemove", function foo() {
+  // debounce is a static variable :0
+  if(typeof foo.debounce == 'undefined') {
+    foo.debounce = false;
+  }
+
   player.style.cursor = "default";
+
+  // blocks the user from starting this function again until timeout is finished
+  if(foo.debounce) return;
+  foo.debounce = true;
+
   setTimeout(() => {
     player.style.cursor = "none";
+    foo.debounce = false;
   }, 1000);
 })
 
