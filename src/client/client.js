@@ -26,9 +26,17 @@ client.on("leader", () => {
   addLeaderControls();
 })
 
+client.on("reload-subtitle", () => {
+  //reload the subtitles for new ones
+  reloadSubtitle();
+
+  //send a notification for new subtitles
+  showNotif("🎬 New subtitles have been applied!")
+});
+
 client.on("sync", data => {sync(data.video)});
 
-client.on("reload-subtitle", reloadSubtitle);
+client.on("notify", data => {showNotif(data.message)});
 
 
 
@@ -73,6 +81,9 @@ function sync(video)
   if(videoPlayer.src != video.link) {
     videoPlayer.src = video.link;
     currentVideo.link = video.link;
+
+    //send a notification for new video
+    showNotif("🎥 A new video has been played!")
   }
 
   //set the client videoTime to server videoTime
@@ -288,6 +299,37 @@ function removeLeaderControls()
 
   //remove the leaderControls keybinds
   window.removeEventListener("keydown", leaderControlsKeydown);
+}
+
+function showNotif(text) {
+	const container = document.createElement("div");
+	const deleteBtn = document.createElement("button");
+  container.classList.add("notification");
+  container.classList.add("is-danger");
+	deleteBtn.classList.add("delete");
+  
+  container.textContent = text;
+  container.style.position = "absolute";
+  container.style.bottom = 0;
+  container.style.right = 0;
+  container.style.transition = "200ms transform";
+  container.style.transform = "translateY(100%)";
+  container.style.backgroundColor = "black";
+  container.style.border = "2px solid red";
+  
+  deleteBtn.style.backgroundColor = "red";
+
+  setTimeout(() => {
+    container.style.transform = "translateY(0%)";
+  }, 200)
+
+  deleteBtn.addEventListener("click", () => {
+    container.style.transform = "translateY(100%)";
+    setTimeout(() => {container.remove()}, 200);
+  })
+
+  container.appendChild(deleteBtn);
+  document.body.appendChild(container);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
