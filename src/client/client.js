@@ -85,22 +85,14 @@ player.addEventListener("click", function foo() {
 })
 
 player.addEventListener("mousemove", function foo() {
-  // counter is a static variable used to measure how many times
-  // the mouse has been moved since setTimeout has been set up
-  if(typeof foo.counter == 'undefined') {
-    foo.counter = 0;
-  }
-
-  foo.counter++;
-  foo.prev = foo.counter;
-
+  // hide cursor on cursor inactivity on player
   player.style.cursor = "default";
 
-  setTimeout(() => {
-    if(foo.prev == foo.counter) {
-      player.style.cursor = "none";
-    }
-  }, 1000);
+  clearTimeout(foo.moved);
+  
+  foo.moved = setTimeout(() => {
+    player.style.cursor = "none";
+  }, 1000)
 })
 
 thresholdInput.addEventListener("change", () => {

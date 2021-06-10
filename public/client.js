@@ -14602,21 +14602,15 @@ player.addEventListener("click", function foo() {
 })
 
 player.addEventListener("mousemove", function foo() {
-  // debounce is a static variable :0
-  if(typeof foo.debounce == 'undefined') {
-    foo.debounce = false;
-  }
-
+  // hide cursor on cursor inactivity on player
   player.style.cursor = "default";
 
-  // blocks the user from starting this function again until timeout is finished
-  if(foo.debounce) return;
-  foo.debounce = true;
-
-  setTimeout(() => {
+  clearTimeout(foo.moved);
+  
+  foo.moved = setTimeout(() => {
+    console.log("HIDE")
     player.style.cursor = "none";
-    foo.debounce = false;
-  }, 1000);
+  }, 1000)
 })
 
 thresholdInput.addEventListener("change", () => {
