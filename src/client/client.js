@@ -223,10 +223,10 @@ function leaderControlsKeydown(event)
       client.emit("seek", {time: -60000, duration: player.duration * 1000});
       break;
     case "KeyJ":
-      client.emit("seek", {time: -1000/60, duration: player.duration * 1000});
+      client.emit("seek", {time: -1000, duration: player.duration * 1000});
       break;
     case "KeyK":
-      client.emit("seek", {time: 1000/60,  duration: player.duration * 1000});
+      client.emit("seek", {time: 1000,  duration: player.duration * 1000});
       break;
     case "KeyL":
       client.emit("seek", {time: 60000,  duration: player.duration * 1000});
@@ -236,6 +236,12 @@ function leaderControlsKeydown(event)
       break;
     case "ArrowRight":
       client.emit("seek", {time: 5000,   duration: player.duration * 1000});
+      break;
+    case "Comma":
+      client.emit("seek", {time: -1000/60,  duration: player.duration * 1000});
+      break;
+    case "Period":
+      client.emit("seek", {time: 1000/60,   duration: player.duration * 1000});
       break;
     default:
       //return if nothing matches
