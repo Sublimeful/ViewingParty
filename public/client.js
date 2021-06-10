@@ -14537,99 +14537,6 @@ var currentVideo = {
 
 
 
-progressBar.addEventListener("click", event => {
-  // set video currentTime when click on progressBar
-  client.emit("set-time", {time: (event.clientX / document.body.clientWidth) * videoPlayer.duration * 1000});
-})
-
-volumeSlider.addEventListener("input", () => {
-  //unmute and set the volume
-  videoPlayer.muted = false;
-  videoPlayer.volume = volumeSlider.value / 100;
-
-  //change the look of audioBtn to look activated
-  audioBtn.classList.add("activated");
-})
-
-audioBtn.addEventListener("click", () => {
-  //toggle videoPlayer muted state
-  videoPlayer.muted = !videoPlayer.muted;
-
-  //change autoBtn class based on muted state
-  if(!videoPlayer.muted)
-    audioBtn.classList.add("activated");
-  else
-    audioBtn.classList.remove("activated");
-})
-
-videoPlayer.addEventListener("click", function foo() {
-  // debounce is a static variable :0
-  if(typeof foo.debounce == 'undefined') {
-    foo.debounce = false;
-  }
-
-  // blocks the user from starting this function again
-  // until removeEventListener has been called
-  if(foo.debounce) return;
-  foo.debounce = true;
-
-  function fullscreenFunction() {
-    if(!document.fullscreenElement) {
-      if(videoContainer.requestFullscreen) {
-        videoContainer.requestFullscreen();
-      } else if(videoContainer.webkitRequestFullscreen) { /* Safari */
-        videoContainer.webkitRequestFullscreen();
-      } else if(videoContainer.msRequestFullscreen) { /* IE11 */
-        videoContainer.msRequestFullscreen();
-      }
-    } else {
-      if(document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if(document.webkitExitFullscreen) { /* Safari */
-        document.webkitExitFullscreen();
-      } else if(document.msExitFullscreen) { /* IE11 */
-        document.msExitFullscreen();
-      }
-    }
-  }
-
-  // if the user clicks again within 250 seconds, then go into fullscreen
-  videoPlayer.addEventListener("click", fullscreenFunction);
-
-  setTimeout(() => {
-    videoPlayer.removeEventListener("click", fullscreenFunction);
-    foo.debounce = false;
-  }, 250)
-})
-
-videoPlayer.addEventListener("mousemove", function foo() {
-  // hide cursor on cursor inactivity on videoPlayer
-  videoPlayer.style.cursor = "default";
-
-  clearTimeout(foo.moved);
-  
-  foo.moved = setTimeout(() => {
-    videoPlayer.style.cursor = "none";
-  }, 1000)
-})
-
-thresholdInput.addEventListener("change", () => {
-  //get threshold from input
-  threshold = parseInt(thresholdInput.value);
-
-  //if input value is not a number or if threshold is negative, then default to 400
-  if(isNaN(threshold) || threshold < 0)
-    threshold = 400;
-})
-
-leaderBtn.addEventListener("click", () => {
-  //pretends to remove leader stuff
-  leaderBtn.classList.remove("activated");
-  removeLeaderControls();
-
-  client.emit("toggle-leader")
-});
-
 client.on("leader", () => {
   //when client becomes leader, activate leaderBtn and addLeaderControls
   leaderBtn.classList.add("activated");
@@ -14749,9 +14656,9 @@ function leaderControlsKeydown(event)
 
   //if videoInput is focused or ctrl/alt is down, then dont react to keys
   if(document.activeElement == videoInput     ||
-     document.activeElement == thresholdInput ||
-     event.ctrlKey                            ||
-     event.altKey)
+    document.activeElement == thresholdInput ||
+    event.ctrlKey                            ||
+    event.altKey)
     return;
 
   //if user presses a number (tests if event.key only has numbers in it)
@@ -14911,6 +14818,116 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //start update loop after 200 milliseconds
   setTimeout(update, 200);
+
+  // hide cursor on cursor inactivity on videoPlayer
+  videoPlayer.addEventListener("mousemove", function foo() {
+    videoPlayer.style.cursor = "default";
+    progressBar.style.opacity = "1.0";
+
+    clearTimeout(foo.moved);
+
+    foo.moved = setTimeout(() => {
+      videoPlayer.style.cursor = "none";
+      if(document.fullscreenElement == videoContainer) {
+        progressBar.style.opacity = "0.0";
+      }
+    }, 1000)
+  })
+
+  // set video currentTime when click on progressBar
+  progressBar.addEventListener("click", event => {
+    client.emit("set-time", {time: (event.clientX / document.body.clientWidth) * videoPlayer.duration * 1000});
+  })
+
+  audioBtn.addEventListener("click", () => {
+    //toggle videoPlayer muted state
+    videoPlayer.muted = !videoPlayer.muted;
+
+    //change autoBtn class based on muted state
+    if(!videoPlayer.muted)
+      audioBtn.classList.add("activated");
+    else
+      audioBtn.classList.remove("activated");
+  })
+
+  leaderBtn.addEventListener("click", () => {
+    //pretends to remove leader stuff
+    leaderBtn.classList.remove("activated");
+    removeLeaderControls();
+
+    client.emit("toggle-leader")
+  });
+
+  volumeSlider.addEventListener("input", () => {
+    //unmute and set the volume
+    videoPlayer.muted = false;
+    videoPlayer.volume = volumeSlider.value / 100;
+
+    //change the look of audioBtn to look activated
+    audioBtn.classList.add("activated");
+  })
+
+  thresholdInput.addEventListener("change", () => {
+    //get threshold from input
+    threshold = parseInt(thresholdInput.value);
+
+    //if input value is not a number or if threshold is negative, then default to 400
+    if(isNaN(threshold) || threshold < 0)
+      threshold = 400;
+  })
+
+  videoPlayer.addEventListener("click", function foo() {
+    // debounce is a static variable :0
+    if(typeof foo.debounce == 'undefined') {
+      foo.debounce = false;
+    }
+
+    // blocks the user from starting this function again
+    // until removeEventListener has been called
+    if(foo.debounce) return;
+    foo.debounce = true;
+
+    function fullscreenFunction() {
+      if(!document.fullscreenElement) {
+        if(videoContainer.requestFullscreen) {
+          videoContainer.requestFullscreen();
+        } else if(videoContainer.webkitRequestFullscreen) { /* Safari */
+          videoContainer.webkitRequestFullscreen();
+        } else if(videoContainer.msRequestFullscreen) { /* IE11 */
+          videoContainer.msRequestFullscreen();
+        }
+      } else {
+        if(document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if(document.webkitExitFullscreen) { /* Safari */
+          document.webkitExitFullscreen();
+        } else if(document.msExitFullscreen) { /* IE11 */
+          document.msExitFullscreen();
+        }
+      }
+    }
+
+    // if the user clicks again within 250 seconds, then go into fullscreen
+    videoPlayer.addEventListener("click", fullscreenFunction);
+
+    setTimeout(() => {
+      videoPlayer.removeEventListener("click", fullscreenFunction);
+      foo.debounce = false;
+    }, 250)
+  })
+
+  document.addEventListener("fullscreenchange", () => {
+    // document.fullscreenElement will point to the element that
+    // is in fullscreen mode if there is one. If there isn't one,
+    // the value of the property is null.
+    if(document.fullscreenElement == videoContainer) {
+      videoPlayer.style.height   = "100%";
+      progressBar.style.position = "absolute";
+    } else {
+      videoPlayer.style.height   = "calc(100% - 10px)";
+      progressBar.style.position = "relative";
+    }
+  });
 });
 
 
