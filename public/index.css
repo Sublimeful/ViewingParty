@@ -31,12 +31,14 @@ input[type="file"] {
 
 
 #video-container {
-  width:  100%;
-  height: calc(95% - 52px);
+  width:          100%;
+  height:         calc(95% - 52px);
+  display:        flex;
+  flex-direction: column;
 }
 #video-player {
   width:   100%;
-  height:  100%;
+  height:  calc(100% - 10px);
   outline: none;
 }
 #video-player::-webkit-media-controls {
@@ -45,12 +47,17 @@ input[type="file"] {
 
 
 #progress-bar {
-  width:  100%;
-  height: 10px;
+  width:      100%;
+  height:     10px;
+  bottom:     0;
+  transition: 150ms opacity;
 }
 #progress-bar div {
   height:           100%;
   background-color: white;
+}
+#progress-bar:hover {
+  opacity: 0.5 !important;
 }
 
 
