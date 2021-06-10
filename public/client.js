@@ -14601,6 +14601,14 @@ player.addEventListener("click", function foo() {
   }, 250)
 })
 
+player.addEventListener("mousemove", () => {
+  console.log("ASD");
+  player.style.cursor = "default";
+  setTimeout(() => {
+    player.style.cursor = "none";
+  }, 1000);
+})
+
 thresholdInput.addEventListener("change", () => {
   //get threshold from input
   threshold = parseInt(thresholdInput.value);
