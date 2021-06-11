@@ -60,12 +60,14 @@ server.on("connection", client => {
     //if video differs, then sync
     if(clientVideo.link != currentVideo.link) {
       client.emit("sync", {video: currentVideo});
+      return;
     }
 
     //if the difference between server time and client time is
     //greater than threshold then sync client with server
     if(Math.abs(tools.getTime(currentVideo) - clientTime) > threshold) {
       client.emit("sync", {video: currentVideo});
+      return;
     }
   })
 
