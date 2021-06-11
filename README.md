@@ -5,4 +5,4 @@ A Viewing Party you can setup with your friends!
 1. `npm install`
 2. Open port `8000` on your router (You can customize the port in server.js)
 3. `npm start`
-4. Open the 
+4. Send the global link (public ip + port number) to your friends, and open your local link (private ip + port number).
