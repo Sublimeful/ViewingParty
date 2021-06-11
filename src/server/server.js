@@ -1,9 +1,9 @@
-import express from "express";
-import { Server } from "socket.io";
-import ss from "socket.io-stream";
-import ytdl from "ytdl-core";
-import path from "path";
-import fs   from "fs";
+import express    from "express";
+import {Server}   from "socket.io";
+import ss         from "socket.io-stream";
+import ytdl       from "ytdl-core";
+import path       from "path";
+import fs         from "fs";
 
 import * as tools from "./ServerTools.js";
 
@@ -19,10 +19,10 @@ var subtitlePath = "public/sub.vtt";
 var clientList   = [];
 
 var currentVideo = {
-  link: "",
+  link:    "",
   start: null,
   pause: null,
-  time: null,
+  time:  null,
 }
 
 
