@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import ss from "socket.io-stream";
 import ytdl from "ytdl-core";
 import path from "path";
-import fs from "fs";
+import fs   from "fs";
 
 import * as tools from "./ServerTools.js";
 
@@ -11,7 +11,7 @@ const app  = express();
 const port = process.env.PORT || 8000;
 
 const httpServer = app.listen(port, () => {
-  console.log("server is listening on port " + port + "!");
+  console.log("Server is listening on port " + port + "!");
 });
 const server     = new Server(httpServer);
 
