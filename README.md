@@ -2,5 +2,6 @@
 
 A Viewing Party you can setup with your friends!
 
-1. npm install
-2. npm start
+1. ||npm install||
+2. 
+3. npm start
