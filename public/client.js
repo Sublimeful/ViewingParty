@@ -14776,22 +14776,14 @@ function addLeaderControls()
   });
 
   subtitle.addEventListener("change", () => {
-    if(subtitle.files[0]) {
-      //activate the subtitleLabel
-      subtitleLabel.classList.add("activated");
+    //create the streams
+    const file       = subtitle.files[0];
+    const stream     = ss.createStream();
+    const blobstream = ss.createBlobReadStream(file);
 
-      //create the streams
-      const file       = subtitle.files[0];
-      const stream     = ss.createStream();
-      const blobstream = ss.createBlobReadStream(file);
-
-      //pipe the blobstream to stream
-      ss(client).emit('subtitle', stream)
-      blobstream.pipe(stream);
-    } else {
-      //deactivate the subtitleLabel
-      subtitleLabel.classList.remove("activated");
-    }
+    //pipe the blobstream to stream
+    ss(client).emit('subtitle', stream)
+    blobstream.pipe(stream);
   })
 
   videoInput.addEventListener("keydown", event => {
