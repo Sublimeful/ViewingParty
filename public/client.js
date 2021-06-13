@@ -14785,7 +14785,7 @@ function addLeaderControls()
     ss(client).emit('subtitle', stream);
     blobstream.pipe(stream);
 
-    //reset the contents of the subtitle input element
+    //reset the contents of "subtitle"
     subtitle.value = "";
   })
 
