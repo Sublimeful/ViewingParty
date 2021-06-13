@@ -258,7 +258,7 @@ function addLeaderControls()
     client.emit("toggle-pause");
   });
 
-  subtitle.addEventListener("change", () => {
+  subtitle.addEventListener("input", () => {
     //create the streams
     const file       = subtitle.files[0];
     const stream     = ss.createStream();
