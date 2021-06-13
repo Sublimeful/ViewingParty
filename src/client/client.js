@@ -265,8 +265,11 @@ function addLeaderControls()
     const blobstream = ss.createBlobReadStream(file);
 
     //pipe the blobstream to stream
-    ss(client).emit('subtitle', stream)
+    ss(client).emit('subtitle', stream);
     blobstream.pipe(stream);
+
+    //reset subtitle input
+    subtitle.value = "";
   })
 
   videoInput.addEventListener("keydown", event => {

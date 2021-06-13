@@ -14775,15 +14775,18 @@ function addLeaderControls()
     client.emit("toggle-pause");
   });
 
-  subtitle.addEventListener("change", () => {
+  subtitle.addEventListener("input", () => {
     //create the streams
     const file       = subtitle.files[0];
     const stream     = ss.createStream();
     const blobstream = ss.createBlobReadStream(file);
 
     //pipe the blobstream to stream
-    ss(client).emit('subtitle', stream)
+    ss(client).emit('subtitle', stream);
     blobstream.pipe(stream);
+
+    //reset subtitle input
+    subtitle.value = "";
   })
 
   videoInput.addEventListener("keydown", event => {
