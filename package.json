@@ -14,7 +14,7 @@
     "socket.io-stream": "^0.9.1",
     "watchify": "^4.0.0",
     "ws": "^7.4.6",
-    "ytdl-core": "^4.8.2"
+    "ytdl-core": "^4.8.3"
   },
   "devDependencies": {},
   "scripts": {
